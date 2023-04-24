@@ -1,3 +1,4 @@
+import type { Entity } from './entity';
 import { SpriteSheet } from './spritesheet';
 import type { Background, Level } from './types';
 
@@ -15,9 +16,9 @@ export function createBackgroundLayer(backgrounds: Background[], sprites: Sprite
   };
 }
 
-export function createSpriteLayer(sprite: SpriteSheet, pos: { x: number; y: number }) {
+export function createSpriteLayer(entity: Entity) {
   return function drawSpriteLayer(context: CanvasRenderingContext2D) {
-    sprite.draw('idle', context, pos.x, pos.y);
+    entity.draw(context);
   };
 }
 
