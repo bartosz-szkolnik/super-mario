@@ -1,6 +1,8 @@
+export type Background = {
+  tile: string;
+  ranges: [[number, number, number, number]];
+};
+
 export type Level = {
-  backgrounds: {
-    tile: string;
-    ranges: [[number, number, number, number]];
-  }[];
+  backgrounds: Background[];
 };
