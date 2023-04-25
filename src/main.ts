@@ -1,9 +1,6 @@
-import { Compositor } from './compositor';
 import { createMario } from './entities';
 import { KeyboardState } from './keyboard-state';
-import { createBackgroundLayer, createSpriteLayer } from './layers';
 import { loadLevel } from './loaders';
-import { loadBackgroundSprites } from './sprites';
 import { Timer } from './timer';
 import { Jump } from './traits';
 
@@ -19,14 +16,10 @@ if (!context) {
   throw new Error('Context on the canvas not initialized properly.');
 }
 
-Promise.all([createMario(), loadBackgroundSprites(), loadLevel('1-1')]).then(([mario, backgroundSprites, level]) => {
+Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   const gravity = 2000;
-  mario.pos.set(64, 180);
-
-  const compositor = new Compositor();
-
-  const backgroundLayer = createBackgroundLayer(level.backgrounds, backgroundSprites);
-  compositor.addLayer(backgroundLayer);
+  mario.pos.set(64, 80);
+  level.addEntity(mario);
 
   const input = new KeyboardState();
   input.addMapping(SPACE_KEY, keyState => {
@@ -38,13 +31,10 @@ Promise.all([createMario(), loadBackgroundSprites(), loadLevel('1-1')]).then(([m
   });
   input.listenTo(window);
 
-  const spriteLayer = createSpriteLayer(mario);
-  compositor.addLayer(spriteLayer);
-
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {
-    mario.update(deltaTime);
-    compositor.draw(context!);
+    level.update(deltaTime);
+    level.draw(context!);
     mario.vel.y += gravity * deltaTime;
   });
 

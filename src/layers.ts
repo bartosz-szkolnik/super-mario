@@ -1,14 +1,15 @@
 import type { Entity } from './entity';
-import { SpriteSheet } from './spritesheet';
-import type { Background, Level } from './types';
+import type { Level } from './level';
+import type { SpriteSheet } from './spritesheet';
 
-export function createBackgroundLayer(backgrounds: Background[], sprites: SpriteSheet) {
+export function createBackgroundLayer(level: Level, sprites: SpriteSheet) {
   const buffer = document.createElement('canvas');
   buffer.width = 256;
   buffer.height = 240;
+  const context = buffer.getContext('2d')!;
 
-  backgrounds.forEach(background => {
-    drawBackground(background, buffer.getContext('2d')!, sprites);
+  level.tiles.forEach((tile, x, y) => {
+    sprites.drawTile(tile.name, context, x, y);
   });
 
   return function drawBackgroundLayer(context: CanvasRenderingContext2D) {
@@ -16,18 +17,10 @@ export function createBackgroundLayer(backgrounds: Background[], sprites: Sprite
   };
 }
 
-export function createSpriteLayer(entity: Entity) {
+export function createSpriteLayer(entities: Set<Entity>) {
   return function drawSpriteLayer(context: CanvasRenderingContext2D) {
-    entity.draw(context);
+    entities.forEach(entity => {
+      entity.draw(context);
+    });
   };
-}
-
-function drawBackground(background: Level['backgrounds'][0], context: CanvasRenderingContext2D, sprites: SpriteSheet) {
-  background.ranges.forEach(([x1, x2, y1, y2]) => {
-    for (let x = x1; x < x2; ++x) {
-      for (let y = y1; y < y2; ++y) {
-        sprites.drawTile(background.tile, context, x, y);
-      }
-    }
-  });
 }

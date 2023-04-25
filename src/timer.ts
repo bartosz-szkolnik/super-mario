@@ -1,6 +1,8 @@
 export class Timer {
   private updateProxy = (_time: number) => {};
   private updateFn = (_deltaTime: number) => {};
+  // fixme: remove later, this is just for developers convenience
+  private frame: number | null = null;
 
   constructor(deltaTime = 1 / 60) {
     let accumulatedTime = 0;
@@ -16,6 +18,14 @@ export class Timer {
       this.enqueue();
       lastTime = time;
     };
+
+    // fixme: remove later, this is just for developers convenience
+    window.addEventListener('keydown', event => {
+      const { code } = event;
+      if (code === 'Escape') {
+        cancelAnimationFrame(this.frame!);
+      }
+    });
   }
 
   start() {
@@ -27,6 +37,6 @@ export class Timer {
   }
 
   private enqueue() {
-    requestAnimationFrame(this.updateProxy);
+    this.frame = requestAnimationFrame(this.updateProxy);
   }
 }

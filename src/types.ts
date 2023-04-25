@@ -3,6 +3,6 @@ export type Background = {
   ranges: [[number, number, number, number]];
 };
 
-export type Level = {
+export type LevelSpec = {
   backgrounds: Background[];
 };
