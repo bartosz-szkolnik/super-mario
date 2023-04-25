@@ -13,6 +13,7 @@ export class Entity {
 
   readonly pos = new Vec2(0, 0);
   readonly vel = new Vec2(0, 0);
+  readonly size = new Vec2(0, 0);
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as new () => Trait, trait);

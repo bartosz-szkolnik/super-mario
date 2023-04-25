@@ -10,11 +10,20 @@ export class KeyboardState {
   // Holds the callback functions for a key code
   private readonly keyMap = new Map<string, KeyFn>();
 
-  addMapping(keyCode: string, callback: KeyFn) {
-    this.keyMap.set(keyCode, callback);
+  addMapping(code: string, callback: KeyFn) {
+    this.keyMap.set(code, callback);
   }
 
-  handleEvent(event: KeyboardEvent) {
+  listenTo(window: Window) {
+    const eventNames = ['keydown', 'keyup'] as const;
+    eventNames.forEach(eventName => {
+      window.addEventListener(eventName, event => {
+        this.handleEvent(event);
+      });
+    });
+  }
+
+  private handleEvent(event: KeyboardEvent) {
     const { code } = event;
     if (!this.keyMap.has(code)) {
       return;
@@ -29,14 +38,5 @@ export class KeyboardState {
     this.keyStates.set(code, keyState);
     const fn = this.keyMap.get(code)!;
     fn(keyState);
-  }
-
-  listenTo(window: Window) {
-    const eventNames = ['keydown', 'keyup'] as const;
-    eventNames.forEach(eventName => {
-      window.addEventListener(eventName, event => {
-        this.handleEvent(event);
-      });
-    });
   }
 }
