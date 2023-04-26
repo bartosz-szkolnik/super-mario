@@ -1,4 +1,6 @@
-export type Layer = (context: CanvasRenderingContext2D) => void;
+import type { Camera } from './camera';
+
+export type Layer = (context: CanvasRenderingContext2D, camera: Camera) => void;
 
 export class Compositor {
   private readonly layers: Layer[] = [];
@@ -7,9 +9,9 @@ export class Compositor {
     this.layers.push(layer);
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, camera: Camera) {
     this.layers.forEach(layer => {
-      layer(context);
+      layer(context, camera);
     });
   }
 }

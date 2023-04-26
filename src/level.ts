@@ -1,3 +1,4 @@
+import type { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { Matrix } from './math';
@@ -6,6 +7,7 @@ import { TileCollider } from './tile-collider';
 export type Tile = {
   // name: string;
   name: 'sky' | 'ground';
+  type?: 'ground';
 };
 
 const GRAVITY = 2000;
@@ -24,8 +26,8 @@ export class Level {
     this.entities.add(entity);
   }
 
-  draw(context: CanvasRenderingContext2D) {
-    this.compositor.draw(context);
+  draw(context: CanvasRenderingContext2D, camera: Camera) {
+    this.compositor.draw(context, camera);
   }
 
   update(deltaTime: number) {

@@ -29,7 +29,7 @@ export class TileCollider {
 
     const matches = this.tiles.searchByRange(x, x, pos.y, pos.y + size.y);
     matches.forEach(match => {
-      if (match.tile.name !== 'ground') {
+      if (match.tile.type !== 'ground') {
         return;
       }
 
@@ -60,7 +60,7 @@ export class TileCollider {
 
     const matches = this.tiles.searchByRange(pos.x, pos.x + size.x, y, y);
     matches.forEach(match => {
-      if (match.tile.name !== 'ground') {
+      if (match.tile.type !== 'ground') {
         return;
       }
 

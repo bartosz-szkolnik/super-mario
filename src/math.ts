@@ -1,5 +1,6 @@
 export class Matrix<T = unknown> {
-  private readonly grid: Array<Array<T>> = [];
+  // fixme make me private again
+  readonly grid: Array<Array<T>> = [];
 
   forEach(fn: (tile: T, x: number, y: number) => void) {
     this.grid.forEach((column, x) => {

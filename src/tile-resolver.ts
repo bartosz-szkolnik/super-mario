@@ -3,6 +3,10 @@ import type { Matrix } from './math';
 
 type Match = { tile: Tile; x1: number; x2: number; y1: number; y2: number };
 
+export function toIndex(pos: number, tileSize = 16) {
+  return Math.floor(pos / tileSize);
+}
+
 export class TileResolver {
   // fixme: change to private
   constructor(private readonly matrix: Matrix<Tile>, public readonly tileSize = 16) {}
@@ -41,7 +45,7 @@ export class TileResolver {
   }
 
   private toIndex(pos: number) {
-    return Math.floor(pos / this.tileSize);
+    return toIndex(pos, this.tileSize);
   }
 
   // fixme change to private
