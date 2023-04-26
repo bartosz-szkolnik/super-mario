@@ -18,6 +18,11 @@ export function createBackgroundLayer(level: Level, sprites: SpriteSheet): Layer
       const col = tiles.grid[x];
       if (col) {
         col.forEach((tile, y) => {
+          if (sprites.hasAnimation(tile.name)) {
+            sprites.drawAnimation(tile.name, context, x - startIndex, y, level.totalTime);
+            return;
+          }
+
           sprites.drawTile(tile.name, context, x - startIndex, y);
         });
       }

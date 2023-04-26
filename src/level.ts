@@ -6,7 +6,7 @@ import { TileCollider } from './tile-collider';
 
 export type Tile = {
   // name: string;
-  name: 'sky' | 'ground';
+  name: 'sky' | 'ground' | 'chance';
   type?: 'ground';
 };
 
@@ -17,6 +17,8 @@ export class Level {
   readonly entities = new Set<Entity>();
   readonly tiles = new Matrix<Tile>();
   readonly tileCollider = new TileCollider(this.tiles);
+
+  totalTime = 0;
 
   addLayer(layer: Layer) {
     this.compositor.addLayer(layer);
@@ -41,5 +43,7 @@ export class Level {
 
       entity.vel.y += GRAVITY * deltaTime;
     });
+
+    this.totalTime += deltaTime;
   }
 }

@@ -13,8 +13,17 @@ export type SpriteSet = {
   imageUrl: string;
   tileWidth: number;
   tileHeight: number;
-  tiles: {
+  tiles?: {
     name: 'ground' | 'sky';
     index: [number, number];
+  }[];
+  frames?: {
+    name: 'idle' | 'run-1' | 'run-2' | 'run-3';
+    rect: [number, number, number, number];
+  }[];
+  animations?: {
+    name: 'chance';
+    frameLength: number;
+    frames: string[];
   }[];
 };
