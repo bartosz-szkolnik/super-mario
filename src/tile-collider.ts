@@ -48,7 +48,8 @@ export class TileCollider {
   }
 
   // fixme: make private
-  checkY({ pos, size, vel }: Entity) {
+  checkY(entity: Entity) {
+    const { pos, size, vel } = entity;
     let y = 0;
     if (vel.y > 0) {
       y = pos.y + size.y;
@@ -68,11 +69,15 @@ export class TileCollider {
         if (pos.y + size.y > match.y1) {
           pos.y = match.y1 - size.y;
           vel.y = 0;
+
+          entity.obstruct('bottom');
         }
       } else if (vel.y < 0) {
         if (pos.y < match.y2) {
           pos.y = match.y2;
           vel.y = 0;
+
+          entity.obstruct('top');
         }
       }
     });

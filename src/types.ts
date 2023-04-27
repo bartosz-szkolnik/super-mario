@@ -18,7 +18,7 @@ export type SpriteSet = {
     index: [number, number];
   }[];
   frames?: {
-    name: 'idle' | 'run-1' | 'run-2' | 'run-3';
+    name: 'idle' | 'run-1' | 'run-2' | 'run-3' | 'break' | 'jump';
     rect: [number, number, number, number];
   }[];
   animations?: {

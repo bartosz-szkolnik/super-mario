@@ -1,11 +1,14 @@
 import { Vec2 } from './math';
 
 type TraitCtor = new () => Trait;
+export type Side = 'bottom' | 'top';
 
 export class Trait {
   update(_entity: Entity, _deltaTime: number) {
     console.warn('Unhandled update call in Trait.');
   }
+
+  obstruct(_entity: Entity, _side: Side) {}
 }
 
 export class Entity {
@@ -16,7 +19,7 @@ export class Entity {
   readonly size = new Vec2(0, 0);
 
   addTrait(trait: Trait) {
-    this.traits.set(trait.constructor as new () => Trait, trait);
+    this.traits.set(trait.constructor as TraitCtor, trait);
   }
 
   get<T extends Trait>(traitClass: new () => T) {
@@ -32,6 +35,12 @@ export class Entity {
     return this.traits.has(traitClass);
   }
 
+  obstruct(side: Side) {
+    this.traits.forEach(trait => {
+      trait.obstruct(this, side);
+    });
+  }
+
   update(deltaTime: number) {
     this.traits.forEach(trait => {
       trait.update(this, deltaTime);
@@ -39,4 +48,5 @@ export class Entity {
   }
 
   draw(_context: CanvasRenderingContext2D) {}
+  turbo(_turboOn: boolean) {}
 }

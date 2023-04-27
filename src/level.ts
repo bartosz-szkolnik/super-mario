@@ -10,7 +10,7 @@ export type Tile = {
   type?: 'ground';
 };
 
-const GRAVITY = 2000;
+const GRAVITY = 1500;
 
 export class Level {
   private readonly compositor = new Compositor();
