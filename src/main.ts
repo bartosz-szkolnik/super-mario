@@ -1,7 +1,7 @@
 import { Camera } from './camera';
 import { createMario } from './entities';
 import { setupKeyboard } from './input';
-import { loadLevel } from './loaders';
+import { loadLevel } from './loaders/level';
 import { Timer } from './timer';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement | null;

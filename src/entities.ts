@@ -2,9 +2,9 @@ import { createAnimation } from './animation';
 import { Entity } from './entity';
 import { loadSpriteSheet } from './loaders';
 import { Go, Jump } from './traits';
-import type { SpriteSet } from './types';
+import type { SpriteSpec } from './types';
 
-type MarioFrame = Exclude<SpriteSet['frames'], undefined>[0]['name'];
+type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
 
 const RUNNING_FRAMES = ['run-1', 'run-2', 'run-3'] satisfies MarioFrame[];
 const FRAME_LENGTH = 6;

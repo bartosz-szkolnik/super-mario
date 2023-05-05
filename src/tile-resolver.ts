@@ -1,7 +1,7 @@
-import type { Tile } from './level';
+import type { CollisionTile } from './level';
 import type { Matrix } from './math';
 
-type Match = { tile: Tile; x1: number; x2: number; y1: number; y2: number };
+type Match = { tile: CollisionTile; x1: number; x2: number; y1: number; y2: number };
 
 export function toIndex(pos: number, tileSize = 16) {
   return Math.floor(pos / tileSize);
@@ -9,7 +9,7 @@ export function toIndex(pos: number, tileSize = 16) {
 
 export class TileResolver {
   // fixme: change to private
-  constructor(private readonly matrix: Matrix<Tile>, public readonly tileSize = 16) {}
+  constructor(private readonly matrix: Matrix<CollisionTile>, public readonly tileSize = 16) {}
 
   // fixme: should this be private?
   searchByPosition(posX: number, posY: number) {

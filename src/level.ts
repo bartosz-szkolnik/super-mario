@@ -1,22 +1,26 @@
 import type { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
-import { Matrix } from './math';
+import type { Matrix } from './math';
 import { TileCollider } from './tile-collider';
 
-export type Tile = {
-  // name: string;
-  name: 'sky' | 'ground' | 'chance';
+export type CollisionTile = {
   type?: 'ground';
 };
+
+export type BackgroundTile = {
+  // name: string;
+  name: 'sky' | 'ground' | 'chance';
+};
+
+export type Tile = BackgroundTile & CollisionTile;
 
 const GRAVITY = 1500;
 
 export class Level {
   private readonly compositor = new Compositor();
   readonly entities = new Set<Entity>();
-  readonly tiles = new Matrix<Tile>();
-  readonly tileCollider = new TileCollider(this.tiles);
+  tileCollider: TileCollider | null = null;
 
   totalTime = 0;
 
@@ -34,6 +38,11 @@ export class Level {
 
   update(deltaTime: number) {
     this.entities.forEach(entity => {
+      // fixme: delete later
+      if (!this.tileCollider) {
+        throw new Error('Tile collider not found.');
+      }
+
       entity.update(deltaTime);
 
       entity.pos.x += entity.vel.x * deltaTime;
@@ -45,5 +54,9 @@ export class Level {
     });
 
     this.totalTime += deltaTime;
+  }
+
+  setCollisionGrid(matrix: Matrix<CollisionTile>) {
+    this.tileCollider = new TileCollider(matrix);
   }
 }

@@ -1,5 +1,5 @@
 import type { Entity } from './entity';
-import type { Tile } from './level';
+import type { CollisionTile } from './level';
 import type { Matrix } from './math';
 import { TileResolver } from './tile-resolver';
 
@@ -7,7 +7,7 @@ export class TileCollider {
   // fixme change to private
   readonly tiles: TileResolver;
 
-  constructor(readonly tileMatrix: Matrix<Tile>) {
+  constructor(readonly tileMatrix: Matrix<CollisionTile>) {
     this.tiles = new TileResolver(tileMatrix);
   }
 

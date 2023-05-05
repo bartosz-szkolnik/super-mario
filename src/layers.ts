@@ -1,19 +1,20 @@
 import type { Camera } from './camera';
 import type { Layer } from './compositor';
 import type { Entity } from './entity';
-import type { Level } from './level';
+import type { BackgroundTile, Level } from './level';
+import type { Matrix } from './math';
 import type { SpriteSheet } from './spritesheet';
 import { toIndex } from './tile-resolver';
 
-export function createBackgroundLayer(level: Level, sprites: SpriteSheet): Layer {
-  const tiles = level.tiles;
-
+export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile>, sprites: SpriteSheet): Layer {
   const buffer = document.createElement('canvas');
   buffer.width = 256 + 16;
   buffer.height = 240;
   const context = buffer.getContext('2d')!;
 
   function redraw(startIndex: number, endIndex: number) {
+    context.clearRect(0, 0, buffer.width, buffer.height);
+
     for (let x = startIndex; x <= endIndex; ++x) {
       const col = tiles.grid[x];
       if (col) {

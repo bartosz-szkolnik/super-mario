@@ -1,15 +1,24 @@
-export type Background = {
-  tile: 'ground' | 'sky';
-  type?: 'ground';
-  ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
-};
+export type TileSpec =
+  | {
+      type: 'TILE';
+      name: 'ground' | 'sky';
+      behavior?: 'ground';
+      ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
+    }
+  | {
+      type: 'PATTERN';
+      pattern: string;
+      behavior?: 'ground';
+      ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
+    };
 
 export type LevelSpec = {
   spriteSheet: string;
-  backgrounds: Background[];
+  layers: { tiles: TileSpec[] }[];
+  patterns: Record<string, { tiles: TileSpec[] }>;
 };
 
-export type SpriteSet = {
+export type SpriteSpec = {
   imageUrl: string;
   tileWidth: number;
   tileHeight: number;
