@@ -1,48 +1,15 @@
-import { createAnimation } from './animation';
-import { Entity } from './entity';
-import { loadSpriteSheet } from './loaders';
-import { Go, Jump } from './traits';
-import type { SpriteSpec } from './types';
+import { loadGoomba } from './entities/goomba';
+import { loadKoopa } from './entities/koopa';
+import { loadMario } from './entities/mario';
 
-type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
+type EntityFactories = {
+  mario: Awaited<ReturnType<typeof loadMario>>;
+  goomba: Awaited<ReturnType<typeof loadGoomba>>;
+  koopa: Awaited<ReturnType<typeof loadKoopa>>;
+};
 
-const RUNNING_FRAMES = ['run-1', 'run-2', 'run-3'] satisfies MarioFrame[];
-const FRAME_LENGTH = 6;
-
-export async function createMario() {
-  const sprite = await loadSpriteSheet('mario');
-
-  const mario = new Entity();
-  mario.size.set(14, 16);
-
-  mario.addTrait(new Go());
-  mario.addTrait(new Jump());
-
-  mario.turbo = function setTurboState(turboOn: boolean) {
-    mario.get(Go).isRunning = turboOn;
-  };
-
-  const runAnimation = createAnimation(RUNNING_FRAMES, FRAME_LENGTH);
-  function routeFrame(mario: Entity): MarioFrame {
-    if (mario.get(Jump).falling) {
-      return 'jump';
-    }
-
-    const { distance, dir } = mario.get(Go);
-    if (distance > 0) {
-      if ((mario.vel.x > 0 && dir < 0) || (mario.vel.x < 0 && dir > 0)) {
-        return 'break';
-      }
-
-      return runAnimation(distance);
-    }
-
-    return 'idle';
-  }
-
-  mario.draw = function drawMario(context: CanvasRenderingContext2D) {
-    sprite.draw(routeFrame(this), context, 0, 0, this.get(Go).heading < 0);
-  };
-
-  return mario;
+export async function loadEntities() {
+  return Promise.all([loadMario(), loadGoomba(), loadKoopa()]).then(([createMario, createGoomba, createKoopa]) => {
+    return { mario: createMario, goomba: createGoomba, koopa: createKoopa } satisfies EntityFactories;
+  });
 }

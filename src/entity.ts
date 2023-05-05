@@ -1,7 +1,8 @@
+import { BoundingBox } from './bounding-box';
 import { Vec2 } from './math';
 
 type TraitCtor = new () => Trait;
-export type Side = 'bottom' | 'top';
+export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
   update(_entity: Entity, _deltaTime: number) {
@@ -17,6 +18,11 @@ export class Entity {
   readonly pos = new Vec2(0, 0);
   readonly vel = new Vec2(0, 0);
   readonly size = new Vec2(0, 0);
+  readonly offset = new Vec2(0, 0);
+
+  readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
+
+  lifetime = 0;
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as TraitCtor, trait);
@@ -45,6 +51,8 @@ export class Entity {
     this.traits.forEach(trait => {
       trait.update(this, deltaTime);
     });
+
+    this.lifetime += deltaTime;
   }
 
   draw(_context: CanvasRenderingContext2D) {}

@@ -1,5 +1,5 @@
 import { Camera } from './camera';
-import { createMario } from './entities';
+import { loadEntities } from './entities';
 import { setupKeyboard } from './input';
 import { loadLevel } from './loaders/level';
 import { Timer } from './timer';
@@ -14,11 +14,21 @@ if (!context) {
   throw new Error('Context on the canvas not initialized properly.');
 }
 
-Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
+Promise.all([loadEntities(), loadLevel('1-1')]).then(([entity, level]) => {
   const camera = new Camera();
+
+  const mario = entity.mario();
 
   mario.pos.set(64, 80);
   level.addEntity(mario);
+
+  const goomba = entity.goomba();
+  goomba.pos.x = 220;
+  level.entities.add(goomba);
+
+  const koopa = entity.koopa();
+  koopa.pos.x = 240;
+  level.entities.add(koopa);
 
   const input = setupKeyboard(mario);
   input.listenTo(window);

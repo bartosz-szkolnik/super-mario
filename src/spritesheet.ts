@@ -70,6 +70,15 @@ export class SpriteSheet {
     this.drawTile(animation(distance), context, x, y);
   }
 
+  getAnimation(name: string) {
+    const animation = this.animations.get(name);
+    if (!animation) {
+      throw new Error('Wanted to use animation that does not exist.');
+    }
+
+    return animation;
+  }
+
   hasAnimation(name: string) {
     return this.animations.has(name);
   }

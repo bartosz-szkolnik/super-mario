@@ -17,31 +17,36 @@ export class TileCollider {
   }
 
   // fixme: make private
-  checkX({ pos, size, vel }: Entity) {
+  checkX(entity: Entity) {
+    const { vel, bounds } = entity;
     let x = 0;
     if (vel.x > 0) {
-      x = pos.x + size.x;
+      x = bounds.right;
     } else if (vel.x < 0) {
-      x = pos.x;
+      x = bounds.left;
     } else {
       return;
     }
 
-    const matches = this.tiles.searchByRange(x, x, pos.y, pos.y + size.y);
+    const matches = this.tiles.searchByRange(x, x, bounds.top, bounds.bottom);
     matches.forEach(match => {
       if (match.tile.type !== 'ground') {
         return;
       }
 
       if (vel.x > 0) {
-        if (pos.x + size.x > match.x1) {
-          pos.x = match.x1 - size.x;
+        if (bounds.right > match.x1) {
+          bounds.right = match.x1;
           vel.x = 0;
+
+          entity.obstruct('right');
         }
       } else if (vel.x < 0) {
-        if (pos.x < match.x2) {
-          pos.x = match.x2;
+        if (bounds.left < match.x2) {
+          bounds.left = match.x2;
           vel.x = 0;
+
+          entity.obstruct('left');
         }
       }
     });
@@ -49,32 +54,32 @@ export class TileCollider {
 
   // fixme: make private
   checkY(entity: Entity) {
-    const { pos, size, vel } = entity;
+    const { vel, bounds } = entity;
     let y = 0;
     if (vel.y > 0) {
-      y = pos.y + size.y;
+      y = bounds.bottom;
     } else if (vel.y < 0) {
-      y = pos.y;
+      y = bounds.top;
     } else {
       return;
     }
 
-    const matches = this.tiles.searchByRange(pos.x, pos.x + size.x, y, y);
+    const matches = this.tiles.searchByRange(bounds.left, bounds.right, y, y);
     matches.forEach(match => {
       if (match.tile.type !== 'ground') {
         return;
       }
 
       if (vel.y > 0) {
-        if (pos.y + size.y > match.y1) {
-          pos.y = match.y1 - size.y;
+        if (bounds.bottom > match.y1) {
+          bounds.bottom = match.y1;
           vel.y = 0;
 
           entity.obstruct('bottom');
         }
       } else if (vel.y < 0) {
-        if (pos.y < match.y2) {
-          pos.y = match.y2;
+        if (bounds.top < match.y2) {
+          bounds.top = match.y2;
           vel.y = 0;
 
           entity.obstruct('top');
