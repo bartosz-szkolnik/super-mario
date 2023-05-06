@@ -1,7 +1,7 @@
 import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders';
 import type { SpriteSheet } from '../spritesheet';
-import { Go, Jump, Killable, Stomper } from '../traits';
+import { Killable, Stomper, Physics, Solid, Jump, Go } from '../traits';
 import type { SpriteSpec } from '../types';
 
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
@@ -43,6 +43,8 @@ function createMarioFactory(sprite: SpriteSheet) {
     const mario = new Entity();
     mario.size.set(14, 16);
 
+    mario.addTrait(new Physics());
+    mario.addTrait(new Solid());
     mario.addTrait(new Go());
     mario.addTrait(new Jump());
     mario.addTrait(new Killable());

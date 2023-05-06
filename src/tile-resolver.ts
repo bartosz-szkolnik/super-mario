@@ -1,7 +1,7 @@
 import type { CollisionTile } from './level';
 import type { Matrix } from './math';
 
-type Match = { tile: CollisionTile; x1: number; x2: number; y1: number; y2: number };
+export type Match = { tile: CollisionTile; x1: number; x2: number; y1: number; y2: number };
 
 export function toIndex(pos: number, tileSize = 16) {
   return Math.floor(pos / tileSize);

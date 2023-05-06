@@ -1,13 +1,26 @@
 import { BoundingBox } from './bounding-box';
 import type { Level } from './level';
 import { Vec2 } from './math';
+import type { Match } from './tile-resolver';
 
 type TraitCtor = new () => Trait;
+type Task = () => void;
 export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
+  private tasks: Task[] = [];
+
+  queue(task: Task) {
+    this.tasks.push(task);
+  }
+
+  finalize() {
+    this.tasks.forEach(task => task());
+    this.tasks = [];
+  }
+
   update(_entity: Entity, _deltaTime: number, _level: Level) {}
-  obstruct(_entity: Entity, _side: Side) {}
+  obstruct(_entity: Entity, _side: Side, _match: Match) {}
   collides(_us: Entity, _them: Entity) {}
 }
 
@@ -22,7 +35,6 @@ export class Entity {
   readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
 
   lifetime = 0;
-  canCollide = true;
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as TraitCtor, trait);
@@ -41,9 +53,9 @@ export class Entity {
     return this.traits.has(traitClass);
   }
 
-  obstruct(side: Side) {
+  obstruct(side: Side, match: Match) {
     this.traits.forEach(trait => {
-      trait.obstruct(this, side);
+      trait.obstruct(this, side, match);
     });
   }
 
@@ -58,6 +70,12 @@ export class Entity {
   collides(candidate: Entity) {
     this.traits.forEach(trait => {
       trait.collides(this, candidate);
+    });
+  }
+
+  finalize() {
+    this.traits.forEach(trait => {
+      trait.finalize();
     });
   }
 

@@ -11,7 +11,7 @@ export class PlayerController extends Trait {
     this.player = entity;
   }
 
-  update(_entity: Entity, _deltaTime: number, level: Level): void {
+  update(_entity: Entity, _deltaTime: number, level: Level) {
     if (this.player && !level.hasEntity(this.player)) {
       this.player.get(Killable).revive();
 

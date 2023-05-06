@@ -9,7 +9,7 @@ export class Killable extends Trait {
   removeAfter = 2;
 
   kill() {
-    this.dead = true;
+    this.queue(() => (this.dead = true));
   }
 
   revive() {
@@ -22,7 +22,7 @@ export class Killable extends Trait {
       this.deadTime += deltaTime;
 
       if (this.deadTime > this.removeAfter) {
-        level.removeEntity(entity);
+        this.queue(() => level.removeEntity(entity));
       }
     }
   }

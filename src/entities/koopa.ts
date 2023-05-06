@@ -1,13 +1,12 @@
 import { Entity, Trait } from '../entity';
 import { loadSpriteSheet } from '../loaders';
 import type { SpriteSheet } from '../spritesheet';
-import { Killable, PendulumMove, Stomper } from '../traits';
+import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';
 
 type State = 'walking' | 'hiding' | 'panic';
 
 const HIDE_DURATION = 5;
 const PANIC_SPEED = 300;
-const WALK_SPEED = 30;
 
 export async function loadKoopa() {
   const sprite = await loadSpriteSheet('koopa');
@@ -17,6 +16,7 @@ export async function loadKoopa() {
 class Behavior extends Trait {
   state: State = 'walking';
   hideTime = 0;
+  walkSpeed: number | null = null;
 
   collides(us: Entity, them: Entity) {
     if (us.get(Killable).dead) {
@@ -52,7 +52,7 @@ class Behavior extends Trait {
     } else if (this.state === 'hiding') {
       us.get(Killable).kill();
       us.vel.set(100, -200);
-      us.canCollide = false;
+      us.get(Solid).obstructs = false;
     } else if (this.state === 'panic') {
       this.hide(us);
     }
@@ -61,13 +61,16 @@ class Behavior extends Trait {
   private hide(us: Entity) {
     us.vel.x = 0;
     us.get(PendulumMove).enabled = false;
+    if (this.walkSpeed === null) {
+      this.walkSpeed = us.get(PendulumMove).speed;
+    }
     this.state = 'hiding';
     this.hideTime = 0;
   }
 
   private unhide(us: Entity) {
     us.get(PendulumMove).enabled = true;
-    us.get(PendulumMove).speed = WALK_SPEED;
+    us.get(PendulumMove).speed = this.walkSpeed!;
     this.state = 'walking';
   }
 
@@ -118,6 +121,8 @@ function createKoopaFactory(sprite: SpriteSheet) {
     koopa.size.set(16, 16);
     koopa.offset.set(0, 8);
 
+    koopa.addTrait(new Physics());
+    koopa.addTrait(new Solid());
     koopa.addTrait(new PendulumMove());
     koopa.addTrait(new Killable());
     koopa.addTrait(new Behavior());

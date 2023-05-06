@@ -22,6 +22,7 @@ export class Level {
   private readonly compositor = new Compositor();
   // fixme make private
   readonly entities = new Set<Entity>();
+  readonly gravity = GRAVITY;
 
   private readonly entityCollider = new EntityCollider(this.entities);
   tileCollider: TileCollider | null = null;
@@ -50,30 +51,15 @@ export class Level {
 
   update(deltaTime: number) {
     this.entities.forEach(entity => {
-      // fixme: delete later
-      if (!this.tileCollider) {
-        throw new Error('Tile collider not found.');
-      }
-
       entity.update(deltaTime, this);
-
-      entity.pos.x += entity.vel.x * deltaTime;
-      if (entity.canCollide) {
-        this.tileCollider.checkX(entity);
-      }
-
-      entity.pos.y += entity.vel.y * deltaTime;
-      if (entity.canCollide) {
-        this.tileCollider.checkY(entity);
-      }
-
-      entity.vel.y += GRAVITY * deltaTime;
     });
 
     this.entities.forEach(entity => {
-      if (entity.canCollide) {
-        this.entityCollider.check(entity);
-      }
+      this.entityCollider.check(entity);
+    });
+
+    this.entities.forEach(entity => {
+      entity.finalize();
     });
 
     this.totalTime += deltaTime;

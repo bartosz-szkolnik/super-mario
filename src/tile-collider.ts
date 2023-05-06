@@ -36,17 +36,11 @@ export class TileCollider {
 
       if (vel.x > 0) {
         if (bounds.right > match.x1) {
-          bounds.right = match.x1;
-          vel.x = 0;
-
-          entity.obstruct('right');
+          entity.obstruct('right', match);
         }
       } else if (vel.x < 0) {
         if (bounds.left < match.x2) {
-          bounds.left = match.x2;
-          vel.x = 0;
-
-          entity.obstruct('left');
+          entity.obstruct('left', match);
         }
       }
     });
@@ -72,17 +66,11 @@ export class TileCollider {
 
       if (vel.y > 0) {
         if (bounds.bottom > match.y1) {
-          bounds.bottom = match.y1;
-          vel.y = 0;
-
-          entity.obstruct('bottom');
+          entity.obstruct('bottom', match);
         }
       } else if (vel.y < 0) {
         if (bounds.top < match.y2) {
-          bounds.top = match.y2;
-          vel.y = 0;
-
-          entity.obstruct('top');
+          entity.obstruct('top', match);
         }
       }
     });
