@@ -1,7 +1,7 @@
 import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders';
 import type { SpriteSheet } from '../spritesheet';
-import { Go, Jump } from '../traits';
+import { Go, Jump, Killable, Stomper } from '../traits';
 import type { SpriteSpec } from '../types';
 
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
@@ -45,6 +45,10 @@ function createMarioFactory(sprite: SpriteSheet) {
 
     mario.addTrait(new Go());
     mario.addTrait(new Jump());
+    mario.addTrait(new Killable());
+    mario.addTrait(new Stomper());
+
+    mario.get(Killable).removeAfter = 0;
 
     mario.turbo = setTurboState;
     mario.draw = drawMario;

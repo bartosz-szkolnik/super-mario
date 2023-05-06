@@ -1,6 +1,7 @@
 import type { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
+import { EntityCollider } from './entity-collider';
 import type { Matrix } from './math';
 import { TileCollider } from './tile-collider';
 
@@ -19,7 +20,10 @@ const GRAVITY = 1500;
 
 export class Level {
   private readonly compositor = new Compositor();
+  // fixme make private
   readonly entities = new Set<Entity>();
+
+  private readonly entityCollider = new EntityCollider(this.entities);
   tileCollider: TileCollider | null = null;
 
   totalTime = 0;
@@ -30,6 +34,14 @@ export class Level {
 
   addEntity(entity: Entity) {
     this.entities.add(entity);
+  }
+
+  removeEntity(entity: Entity) {
+    this.entities.delete(entity);
+  }
+
+  hasEntity(entity: Entity) {
+    return this.entities.has(entity);
   }
 
   draw(context: CanvasRenderingContext2D, camera: Camera) {
@@ -43,7 +55,7 @@ export class Level {
         throw new Error('Tile collider not found.');
       }
 
-      entity.update(deltaTime);
+      entity.update(deltaTime, this);
 
       entity.pos.x += entity.vel.x * deltaTime;
       this.tileCollider.checkX(entity);
@@ -51,6 +63,10 @@ export class Level {
       this.tileCollider.checkY(entity);
 
       entity.vel.y += GRAVITY * deltaTime;
+    });
+
+    this.entities.forEach(entity => {
+      this.entityCollider.check(entity);
     });
 
     this.totalTime += deltaTime;

@@ -61,14 +61,13 @@ export function createSpriteLayer(entities: Set<Entity>, width = 64, height = 64
 export function createCollisionLayer(level: Level): Layer {
   let resolvedTiles: { x: number; y: number }[] = [];
 
-  const tileResolver = level.tileCollider.tiles;
-  const tileSize = tileResolver.tileSize;
+  const tileResolver = level.tileCollider?.tiles;
+  const tileSize = tileResolver?.tileSize ?? 16;
 
-  const getByIndexOriginal = tileResolver.getByIndex;
-  tileResolver.getByIndex = function getByIndexFake(x: number, y: number) {
+  const getByIndexOriginal = tileResolver?.getByIndex;
+  (tileResolver ?? ({} as any)).getByIndex = function getByIndexFake(x: number, y: number) {
     resolvedTiles.push({ x, y });
-
-    return getByIndexOriginal.call(tileResolver, x, y);
+    return getByIndexOriginal?.call(tileResolver, x, y);
   };
 
   return function drawCollision(context: CanvasRenderingContext2D, camera: Camera) {

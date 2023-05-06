@@ -1,15 +1,14 @@
 import { BoundingBox } from './bounding-box';
+import type { Level } from './level';
 import { Vec2 } from './math';
 
 type TraitCtor = new () => Trait;
 export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
-  update(_entity: Entity, _deltaTime: number) {
-    console.warn('Unhandled update call in Trait.');
-  }
-
+  update(_entity: Entity, _deltaTime: number, _level: Level) {}
   obstruct(_entity: Entity, _side: Side) {}
+  collides(_us: Entity, _them: Entity) {}
 }
 
 export class Entity {
@@ -47,12 +46,18 @@ export class Entity {
     });
   }
 
-  update(deltaTime: number) {
+  update(deltaTime: number, level: Level) {
     this.traits.forEach(trait => {
-      trait.update(this, deltaTime);
+      trait.update(this, deltaTime, level);
     });
 
     this.lifetime += deltaTime;
+  }
+
+  collides(candidate: Entity) {
+    this.traits.forEach(trait => {
+      trait.collides(this, candidate);
+    });
   }
 
   draw(_context: CanvasRenderingContext2D) {}

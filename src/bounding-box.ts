@@ -34,4 +34,12 @@ export class BoundingBox {
   set right(x: number) {
     this.pos.x = x - (this.size.x + this.offset.x);
   }
+
+  overlaps(box: BoundingBox) {
+    // prettier-ignore
+    return this.bottom > box.top
+      && this.top < box.bottom 
+      && this.left < box.right 
+      && this.right > box.left;
+  }
 }

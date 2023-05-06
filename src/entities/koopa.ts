@@ -1,7 +1,7 @@
 import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders';
 import type { SpriteSheet } from '../spritesheet';
-import { PendulumWalk } from '../traits/pendulum-walk';
+import { PendulumWalk } from '../traits';
 
 export async function loadKoopa() {
   const sprite = await loadSpriteSheet('koopa');
