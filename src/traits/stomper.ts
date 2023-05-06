@@ -1,18 +1,17 @@
+import { Killable } from '.';
 import { type Entity, Trait } from '../entity';
 
 const BOUNCE_SPEED = 400;
 
 export class Stomper extends Trait {
-  queueBounce = false;
-
-  bounce() {
-    this.queueBounce = true;
+  collides(us: Entity, them: Entity) {
+    if (them.has(Killable) && us.vel.y > them.vel.y) {
+      this.bounce(us, them);
+    }
   }
 
-  update(entity: Entity) {
-    if (this.queueBounce) {
-      entity.vel.y = -BOUNCE_SPEED;
-      this.queueBounce = false;
-    }
+  private bounce(us: Entity, them: Entity) {
+    us.bounds.bottom = them.bounds.top;
+    us.vel.y = -BOUNCE_SPEED;
   }
 }

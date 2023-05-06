@@ -58,15 +58,22 @@ export class Level {
       entity.update(deltaTime, this);
 
       entity.pos.x += entity.vel.x * deltaTime;
-      this.tileCollider.checkX(entity);
+      if (entity.canCollide) {
+        this.tileCollider.checkX(entity);
+      }
+
       entity.pos.y += entity.vel.y * deltaTime;
-      this.tileCollider.checkY(entity);
+      if (entity.canCollide) {
+        this.tileCollider.checkY(entity);
+      }
 
       entity.vel.y += GRAVITY * deltaTime;
     });
 
     this.entities.forEach(entity => {
-      this.entityCollider.check(entity);
+      if (entity.canCollide) {
+        this.entityCollider.check(entity);
+      }
     });
 
     this.totalTime += deltaTime;

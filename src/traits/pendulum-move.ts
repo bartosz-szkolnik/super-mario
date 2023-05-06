@@ -1,7 +1,8 @@
 import { type Entity, type Side, Trait } from '../entity';
 
-export class PendulumWalk extends Trait {
+export class PendulumMove extends Trait {
   speed = -30;
+  enabled = true;
 
   obstruct(_entity: Entity, side: Side) {
     if (side === 'left' || side === 'right') {
@@ -10,6 +11,8 @@ export class PendulumWalk extends Trait {
   }
 
   update(entity: Entity) {
-    entity.vel.x = this.speed;
+    if (this.enabled) {
+      entity.vel.x = this.speed;
+    }
   }
 }

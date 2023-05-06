@@ -22,6 +22,7 @@ export class Entity {
   readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
 
   lifetime = 0;
+  canCollide = true;
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as TraitCtor, trait);
