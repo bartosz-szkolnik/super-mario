@@ -1,31 +1,52 @@
+import type { EntityFactory } from '../entities';
 import { createBackgroundLayer, createSpriteLayer } from '../layers';
-import { CollisionTile, Level, Tile } from '../level';
+import { type CollisionTile, Level, type Tile } from '../level';
 import { loadJSON, loadSpriteSheet } from '../loaders';
 import { Matrix } from '../math';
+import type { SpriteSheet } from '../spritesheet';
 import type { LevelSpec, TileSpec } from '../types';
 
-export async function loadLevel(name: string) {
-  const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
-  const backgroundSprites = await loadSpriteSheet(levelSpec.spriteSheet);
+export function createLevelLoader(entityFactory: EntityFactory) {
+  return async function loadLevel(name: string) {
+    const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
+    const backgroundSprites = await loadSpriteSheet(levelSpec.spriteSheet);
 
-  const level = new Level();
+    const level = new Level();
 
+    setupCollision(levelSpec, level);
+    setupBackgrounds(levelSpec, level, backgroundSprites);
+    setupEntities(levelSpec, level, entityFactory);
+
+    return level;
+  };
+}
+
+function setupCollision(levelSpec: LevelSpec, level: Level) {
   const mergedTiles = levelSpec.layers.reduce((mergedTiles, layerSpec) => {
     return mergedTiles.concat(layerSpec.tiles);
   }, [] as TileSpec[]);
   const collisionGrid = createCollisionGrid(mergedTiles, levelSpec.patterns);
   level.setCollisionGrid(collisionGrid);
+}
 
+function setupBackgrounds(levelSpec: LevelSpec, level: Level, backgroundSprites: SpriteSheet) {
   levelSpec.layers.forEach(layer => {
     const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
     const backgroundLayer = createBackgroundLayer(level, backgroundGrid, backgroundSprites);
     level.addLayer(backgroundLayer);
   });
+}
+
+function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactory) {
+  levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
+    const createEntity = entityFactory[name];
+    const entity = createEntity();
+    entity.pos.set(x, y);
+    level.entities.add(entity);
+  });
 
   const spriteLayer = createSpriteLayer(level.entities);
   level.addLayer(spriteLayer);
-
-  return level;
 }
 
 function createCollisionGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
@@ -84,16 +105,14 @@ function expandRange(range: TileSpec['ranges'][0]) {
 
 function* expandRanges(ranges: TileSpec['ranges']) {
   for (const range of ranges) {
-    for (const item of expandRange(range)!) {
-      yield item;
-    }
+    yield* expandRange(range);
   }
 }
 
-function expandTiles(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
-  const expandedTiles: { tile: TileSpec; x: number; y: number }[] = [];
+type ExpandedTiles = { tile: TileSpec; x: number; y: number };
 
-  function walkTiles(tiles: TileSpec[], offsetX: number, offsetY: number) {
+function* expandTiles(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
+  function* walkTiles(tiles: TileSpec[], offsetX: number, offsetY: number): Generator<ExpandedTiles> {
     for (const tile of tiles) {
       for (const { x, y } of expandRanges(tile.ranges)) {
         const derivedX = x + offsetX;
@@ -101,19 +120,13 @@ function expandTiles(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
 
         if (tile.type === 'PATTERN') {
           const tiles = patterns[tile.pattern].tiles;
-          walkTiles(tiles, derivedX, derivedY);
+          yield* walkTiles(tiles, derivedX, derivedY);
         } else {
-          expandedTiles.push({
-            tile,
-            x: derivedX,
-            y: derivedY,
-          });
+          yield { tile, x: derivedX, y: derivedY };
         }
       }
     }
   }
 
-  walkTiles(tiles, 0, 0);
-
-  return expandedTiles;
+  yield* walkTiles(tiles, 0, 0);
 }

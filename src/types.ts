@@ -5,17 +5,20 @@ export type TileSpec =
       behavior?: 'ground';
       ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
     }
-  | {
-      type: 'PATTERN';
-      pattern: string;
-      behavior?: 'ground';
-      ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
-    };
+  | TilePatternSpec;
+
+export type TilePatternSpec = {
+  type: 'PATTERN';
+  pattern: string;
+  behavior?: 'ground';
+  ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
+};
 
 export type LevelSpec = {
   spriteSheet: string;
   layers: { tiles: TileSpec[] }[];
   patterns: Record<string, { tiles: TileSpec[] }>;
+  entities: { name: 'goomba' | 'koopa'; pos: [number, number] }[];
 };
 
 export type SpriteSpec = {

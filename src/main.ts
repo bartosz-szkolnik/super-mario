@@ -1,34 +1,20 @@
 import { Camera } from './camera';
 import { loadEntities } from './entities';
 import { setupKeyboard } from './input';
-import { loadLevel } from './loaders/level';
+import { createLevelLoader } from './loaders/level';
 import { Timer } from './timer';
 
-const canvas = document.getElementById('screen') as HTMLCanvasElement | null;
-if (!canvas) {
-  throw new Error('Canvas element not initialized properly. Could not find it in the document.');
-}
+async function main(context: CanvasRenderingContext2D) {
+  const entityFactory = await loadEntities();
+  const loadLevel = createLevelLoader(entityFactory);
+  const level = await loadLevel('1-1');
 
-const context = canvas.getContext('2d');
-if (!context) {
-  throw new Error('Context on the canvas not initialized properly.');
-}
-
-Promise.all([loadEntities(), loadLevel('1-1')]).then(([entity, level]) => {
   const camera = new Camera();
 
-  const mario = entity.mario();
+  const mario = entityFactory.mario();
 
   mario.pos.set(64, 80);
   level.addEntity(mario);
-
-  const goomba = entity.goomba();
-  goomba.pos.x = 220;
-  level.entities.add(goomba);
-
-  const koopa = entity.koopa();
-  koopa.pos.x = 240;
-  level.entities.add(koopa);
 
   const input = setupKeyboard(mario);
   input.listenTo(window);
@@ -45,4 +31,16 @@ Promise.all([loadEntities(), loadLevel('1-1')]).then(([entity, level]) => {
   });
 
   timer.start();
-});
+}
+
+const canvas = document.getElementById('screen') as HTMLCanvasElement | null;
+if (!canvas) {
+  throw new Error('Canvas element not initialized properly. Could not find it in the document.');
+}
+
+const context = canvas.getContext('2d');
+if (!context) {
+  throw new Error('Context on the canvas not initialized properly.');
+}
+
+main(context);
