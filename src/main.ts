@@ -3,7 +3,9 @@ import { loadEntities } from './entities';
 import { PlayerController } from './entities/player-controller';
 import { Entity } from './entity';
 import { setupKeyboard } from './input';
-import { createCollisionLayer } from './layers';
+import { createCollisionLayer } from './layers/collision';
+import { createDashboardLayer } from './layers/dashboard';
+import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
 import { Timer } from './timer';
 
@@ -19,7 +21,7 @@ function createPlayerEnv(playerEntity: Entity) {
 }
 
 async function main(context: CanvasRenderingContext2D) {
-  const entityFactory = await loadEntities();
+  const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
   const loadLevel = createLevelLoader(entityFactory);
   const level = await loadLevel('1-1');
 
@@ -34,6 +36,7 @@ async function main(context: CanvasRenderingContext2D) {
   input.listenTo(window);
 
   level.addLayer(createCollisionLayer(level));
+  level.addLayer(createDashboardLayer(font, playerEnv));
 
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {

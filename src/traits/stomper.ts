@@ -4,6 +4,8 @@ import { type Entity, Trait } from '../entity';
 const BOUNCE_SPEED = 400;
 
 export class Stomper extends Trait {
+  onStomp = () => {};
+
   collides(us: Entity, them: Entity) {
     if (!them.has(Killable) || them.get(Killable).dead) {
       return;
@@ -11,6 +13,7 @@ export class Stomper extends Trait {
 
     if (us.vel.y > them.vel.y) {
       this.bounce(us, them);
+      this.onStomp();
     }
   }
 
