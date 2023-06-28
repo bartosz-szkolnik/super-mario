@@ -1,5 +1,6 @@
 import type { AudioBoard } from './audio-board';
 import { BoundingBox } from './bounding-box';
+import { EventEmitter } from './event-emitter';
 import type { Level } from './level';
 import type { GameContext } from './main';
 import { Vec2 } from './math';
@@ -12,6 +13,7 @@ export type Side = 'bottom' | 'top' | 'right' | 'left';
 export class Trait {
   private tasks: Task[] = [];
   protected readonly sounds = new Set<string>();
+  readonly events = new EventEmitter();
 
   queue(task: Task) {
     this.tasks.push(task);

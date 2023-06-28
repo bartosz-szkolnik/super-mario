@@ -13,9 +13,9 @@ export class PlayerController extends Trait {
   setPlayer(entity: Entity) {
     this.player = entity;
 
-    this.player.get(Stomper).onStomp = () => {
+    this.player.get(Stomper).events.listen('stomp', () => {
       this.score += 100;
-    };
+    });
   }
 
   update(_entity: Entity, { deltaTime }: GameContext, level: Level) {
