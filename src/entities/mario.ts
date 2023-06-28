@@ -1,17 +1,20 @@
+import type { AudioBoard } from '../audio-board';
 import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders';
+import { loadAudioBoard } from '../loaders/audio';
 import type { SpriteSheet } from '../spritesheet';
 import { Killable, Stomper, Physics, Solid, Jump, Go } from '../traits';
 import type { SpriteSpec } from '../types';
 
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
 
-export async function loadMario() {
-  const sprite = await loadSpriteSheet('mario');
-  return createMarioFactory(sprite);
+export async function loadMario(audioContext: AudioContext) {
+  return Promise.all([loadSpriteSheet('mario'), loadAudioBoard('mario', audioContext)]).then(([sprite, audio]) => {
+    return createMarioFactory(sprite, audio);
+  });
 }
 
-function createMarioFactory(sprite: SpriteSheet) {
+function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   const runAnimation = sprite.getAnimation('run');
 
   function routeFrame(mario: Entity): MarioFrame {
@@ -41,6 +44,7 @@ function createMarioFactory(sprite: SpriteSheet) {
 
   return function createMario() {
     const mario = new Entity();
+    mario.audio = audio;
     mario.size.set(14, 16);
 
     mario.addTrait(new Physics());

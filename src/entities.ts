@@ -8,8 +8,10 @@ export type EntityFactory = {
   koopa: Awaited<ReturnType<typeof loadKoopa>>;
 };
 
-export async function loadEntities() {
-  return Promise.all([loadMario(), loadGoomba(), loadKoopa()]).then(([createMario, createGoomba, createKoopa]) => {
-    return { mario: createMario, goomba: createGoomba, koopa: createKoopa } satisfies EntityFactory;
-  });
+export async function loadEntities(audioContext: AudioContext) {
+  return Promise.all([loadMario(audioContext), loadGoomba(), loadKoopa()]).then(
+    ([createMario, createGoomba, createKoopa]) => {
+      return { mario: createMario, goomba: createGoomba, koopa: createKoopa } satisfies EntityFactory;
+    },
+  );
 }

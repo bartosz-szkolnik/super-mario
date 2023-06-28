@@ -1,4 +1,5 @@
 import { type Entity, Trait, type Side } from '../entity';
+import type { GameContext } from '../main';
 
 const ALLOWED_JUMP_DURATION = 0.3;
 const JUMP_VELOCITY = 200;
@@ -31,19 +32,20 @@ export class Jump extends Trait {
     }
   }
 
-  update(entity: Entity, deltaTime: number) {
+  update(entity: Entity, { deltaTime }: GameContext) {
     if (this.requestTime > 0) {
       if (this.ready > 0) {
+        this.sounds.add('jump');
         this.engageTime = ALLOWED_JUMP_DURATION;
         this.requestTime = 0;
       }
 
-      this.requestTime -= deltaTime;
+      this.requestTime -= deltaTime ?? 0;
     }
 
     if (this.engageTime > 0) {
       entity.vel.y = -(JUMP_VELOCITY + Math.abs(entity.vel.x * SPEED_BOOST));
-      this.engageTime -= deltaTime;
+      this.engageTime -= deltaTime ?? 0;
     }
 
     this.ready--;

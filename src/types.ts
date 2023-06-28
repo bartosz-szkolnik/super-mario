@@ -39,3 +39,7 @@ export type SpriteSpec = {
     frames: string[];
   }[];
 };
+
+export type AudioSheetSpec = {
+  fx: Record<string, { url: string }>;
+};

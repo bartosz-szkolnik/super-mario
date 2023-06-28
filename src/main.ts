@@ -9,6 +9,11 @@ import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
 import { Timer } from './timer';
 
+export type GameContext = {
+  readonly audioContext: AudioContext;
+  deltaTime: number | null;
+};
+
 function createPlayerEnv(playerEntity: Entity) {
   const playerEnv = new Entity();
   const playerController = new PlayerController();
@@ -21,7 +26,9 @@ function createPlayerEnv(playerEntity: Entity) {
 }
 
 async function main(context: CanvasRenderingContext2D) {
-  const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
+  const audioContext = new AudioContext();
+  const [entityFactory, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
+
   const loadLevel = createLevelLoader(entityFactory);
   const level = await loadLevel('1-1');
 
@@ -35,12 +42,18 @@ async function main(context: CanvasRenderingContext2D) {
   const input = setupKeyboard(mario);
   input.listenTo(window);
 
+  const gameContext: GameContext = {
+    audioContext,
+    deltaTime: null,
+  };
+
   level.addLayer(createCollisionLayer(level));
   level.addLayer(createDashboardLayer(font, playerEnv));
 
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {
-    level.update(deltaTime);
+    gameContext.deltaTime = deltaTime;
+    level.update(gameContext);
     camera.pos.x = Math.max(0, mario.pos.x - 100);
     level.draw(context!, camera);
   });
@@ -58,4 +71,9 @@ if (!context) {
   throw new Error('Context on the canvas not initialized properly.');
 }
 
-main(context);
+function start() {
+  window.removeEventListener('click', start);
+  main(context!);
+}
+
+window.addEventListener('click', start);

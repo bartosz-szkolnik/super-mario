@@ -1,5 +1,6 @@
 import { Entity, Trait } from '../entity';
 import { loadSpriteSheet } from '../loaders';
+import type { GameContext } from '../main';
 import type { SpriteSheet } from '../spritesheet';
 import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';
 
@@ -80,9 +81,9 @@ class Behavior extends Trait {
     this.state = 'panic';
   }
 
-  update(us: Entity, deltaTime: number) {
+  update(us: Entity, { deltaTime }: GameContext) {
     if (this.state === 'hiding') {
-      this.hideTime += deltaTime;
+      this.hideTime += deltaTime ?? 0;
       if (this.hideTime > HIDE_DURATION) {
         this.unhide(us);
       }

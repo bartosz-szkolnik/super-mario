@@ -2,6 +2,7 @@ import type { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
+import type { GameContext } from './main';
 import type { Matrix } from './math';
 import { TileCollider } from './tile-collider';
 
@@ -49,9 +50,9 @@ export class Level {
     this.compositor.draw(context, camera);
   }
 
-  update(deltaTime: number) {
+  update(gameContext: GameContext) {
     this.entities.forEach(entity => {
-      entity.update(deltaTime, this);
+      entity.update(gameContext, this);
     });
 
     this.entities.forEach(entity => {
@@ -62,7 +63,7 @@ export class Level {
       entity.finalize();
     });
 
-    this.totalTime += deltaTime;
+    this.totalTime += gameContext.deltaTime ?? 0;
   }
 
   setCollisionGrid(matrix: Matrix<CollisionTile>) {

@@ -1,5 +1,6 @@
-import { Entity, Trait } from '../entity';
-import { Level } from '../level';
+import type { Level } from '../level';
+import { type Entity, Trait } from '../entity';
+import type { GameContext } from '../main';
 import { Vec2 } from '../math';
 import { Killable, Stomper } from '../traits';
 
@@ -17,7 +18,7 @@ export class PlayerController extends Trait {
     };
   }
 
-  update(_entity: Entity, deltaTime: number, level: Level) {
+  update(_entity: Entity, { deltaTime }: GameContext, level: Level) {
     if (this.player && !level.hasEntity(this.player)) {
       this.player.get(Killable).revive();
 
@@ -25,7 +26,7 @@ export class PlayerController extends Trait {
       this.player.pos.set(x, y);
       level.addEntity(this.player);
     } else {
-      this.time -= deltaTime * 2;
+      this.time -= (deltaTime ?? 0) * 2;
     }
   }
 }

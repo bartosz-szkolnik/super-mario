@@ -1,5 +1,7 @@
+import type { AudioBoard } from './audio-board';
 import { BoundingBox } from './bounding-box';
 import type { Level } from './level';
+import type { GameContext } from './main';
 import { Vec2 } from './math';
 import type { Match } from './tile-resolver';
 
@@ -9,6 +11,7 @@ export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
   private tasks: Task[] = [];
+  protected readonly sounds = new Set<string>();
 
   queue(task: Task) {
     this.tasks.push(task);
@@ -19,7 +22,15 @@ export class Trait {
     this.tasks = [];
   }
 
-  update(_entity: Entity, _deltaTime: number, _level: Level) {}
+  playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
+    this.sounds.forEach(name => {
+      audioBoard.play(name, audioContext);
+    });
+
+    this.sounds.clear();
+  }
+
+  update(_entity: Entity, _gameContext: GameContext, _level: Level) {}
   obstruct(_entity: Entity, _side: Side, _match: Match) {}
   collides(_us: Entity, _them: Entity) {}
 }
@@ -35,6 +46,7 @@ export class Entity {
   readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
 
   lifetime = 0;
+  audio: AudioBoard | null = null;
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as TraitCtor, trait);
@@ -59,12 +71,13 @@ export class Entity {
     });
   }
 
-  update(deltaTime: number, level: Level) {
+  update(gameContext: GameContext, level: Level) {
     this.traits.forEach(trait => {
-      trait.update(this, deltaTime, level);
+      trait.update(this, gameContext, level);
+      trait.playSounds(this.audio!, gameContext.audioContext);
     });
 
-    this.lifetime += deltaTime;
+    this.lifetime += gameContext.deltaTime ?? 0;
   }
 
   collides(candidate: Entity) {

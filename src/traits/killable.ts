@@ -1,5 +1,6 @@
-import { Entity, Trait } from '../entity';
-import { Level } from '../level';
+import { type Entity, Trait } from '../entity';
+import type { Level } from '../level';
+import type { GameContext } from '../main';
 
 // const REMOVE_AFTER_TIME = 2;
 
@@ -17,9 +18,9 @@ export class Killable extends Trait {
     this.deadTime = 0;
   }
 
-  update(entity: Entity, deltaTime: number, level: Level) {
+  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
     if (this.dead) {
-      this.deadTime += deltaTime;
+      this.deadTime += deltaTime ?? 0;
 
       if (this.deadTime > this.removeAfter) {
         this.queue(() => level.removeEntity(entity));
