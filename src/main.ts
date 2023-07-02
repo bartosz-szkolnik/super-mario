@@ -49,6 +49,7 @@ async function main(context: CanvasRenderingContext2D) {
   });
 
   timer.start();
+  level.musicController.player?.playTrack('main');
 }
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement | null;

@@ -3,6 +3,7 @@ import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
 import type { GameContext } from './main';
+import { MusicController } from './music-controller';
 import { TileCollider } from './tile-collider';
 
 export type CollisionTile = {
@@ -28,6 +29,8 @@ export class Level {
   readonly tileCollider = new TileCollider();
 
   totalTime = 0;
+
+  readonly musicController = new MusicController();
 
   addLayer(layer: Layer) {
     this.compositor.addLayer(layer);

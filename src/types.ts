@@ -16,6 +16,7 @@ export type TilePatternSpec = {
 
 export type LevelSpec = {
   spriteSheet: string;
+  musicSheet: string;
   layers: { tiles: TileSpec[] }[];
   patterns: Record<string, { tiles: TileSpec[] }>;
   entities: { name: 'goomba' | 'koopa'; pos: [number, number] }[];
@@ -42,4 +43,10 @@ export type SpriteSpec = {
 
 export type AudioSheetSpec = {
   fx: Record<string, { url: string }>;
+};
+
+export type MusicSheetSpec = {
+  main: {
+    url: string;
+  };
 };

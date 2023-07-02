@@ -1,5 +1,5 @@
 import { Entity, Trait } from '../entity';
-import { loadSpriteSheet } from '../loaders';
+import { loadSpriteSheet } from '../loaders/sprite';
 import type { GameContext } from '../main';
 import type { SpriteSheet } from '../spritesheet';
 import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';

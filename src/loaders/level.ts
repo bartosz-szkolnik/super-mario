@@ -2,17 +2,24 @@ import type { EntityFactory } from '../entities';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { Level, type Tile } from '../level';
-import { loadJSON, loadSpriteSheet } from '../loaders';
+import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
 import type { LevelSpec, TileSpec } from '../types';
+import { loadMusicSheet } from './music';
+import { loadSpriteSheet } from './sprite';
 
 export function createLevelLoader(entityFactory: EntityFactory) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
-    const backgroundSprites = await loadSpriteSheet(levelSpec.spriteSheet);
+
+    const [backgroundSprites, musicPlayer] = await Promise.all([
+      loadSpriteSheet(levelSpec.spriteSheet),
+      loadMusicSheet(levelSpec.musicSheet),
+    ]);
 
     const level = new Level();
+    level.musicController.setPlayer(musicPlayer);
 
     setupBackgrounds(levelSpec, level, backgroundSprites);
     setupEntities(levelSpec, level, entityFactory);

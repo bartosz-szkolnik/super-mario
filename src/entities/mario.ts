@@ -1,6 +1,6 @@
 import type { AudioBoard } from '../audio-board';
 import { Entity } from '../entity';
-import { loadSpriteSheet } from '../loaders';
+import { loadSpriteSheet } from '../loaders/sprite';
 import { loadAudioBoard } from '../loaders/audio';
 import type { SpriteSheet } from '../spritesheet';
 import { Killable, Stomper, Physics, Solid, Jump, Go } from '../traits';
