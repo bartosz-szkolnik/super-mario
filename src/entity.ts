@@ -12,7 +12,6 @@ export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
   private tasks: Task[] = [];
-  protected readonly sounds = new Set<string>();
   readonly events = new EventEmitter();
 
   queue(task: Task) {
@@ -24,14 +23,6 @@ export class Trait {
     this.tasks = [];
   }
 
-  playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
-    this.sounds.forEach(name => {
-      audioBoard.play(name, audioContext);
-    });
-
-    this.sounds.clear();
-  }
-
   update(_entity: Entity, _gameContext: GameContext, _level: Level) {}
   obstruct(_entity: Entity, _side: Side, _match: Match) {}
   collides(_us: Entity, _them: Entity) {}
@@ -39,6 +30,7 @@ export class Trait {
 
 export class Entity {
   private readonly traits = new Map<TraitCtor, Trait>();
+  readonly sounds = new Set<string>();
 
   readonly pos = new Vec2(0, 0);
   readonly vel = new Vec2(0, 0);
@@ -76,9 +68,9 @@ export class Entity {
   update(gameContext: GameContext, level: Level) {
     this.traits.forEach(trait => {
       trait.update(this, gameContext, level);
-      trait.playSounds(this.audio!, gameContext.audioContext);
     });
 
+    this.playSounds(this.audio!, gameContext.audioContext);
     this.lifetime += gameContext.deltaTime ?? 0;
   }
 
@@ -92,6 +84,14 @@ export class Entity {
     this.traits.forEach(trait => {
       trait.finalize();
     });
+  }
+
+  playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
+    this.sounds.forEach(name => {
+      audioBoard.play(name, audioContext);
+    });
+
+    this.sounds.clear();
   }
 
   draw(_context: CanvasRenderingContext2D) {}

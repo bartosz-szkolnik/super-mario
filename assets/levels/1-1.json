@@ -115,6 +115,22 @@
           "ranges": [[2, 1]]
         }
       ]
+    },
+    "cannon-2h": {
+      "tiles": [
+        {
+          "type": "TILE",
+          "name": "cannon-1",
+          "behavior": "ground",
+          "ranges": [[0, 0]]
+        },
+        {
+          "type": "TILE",
+          "name": "cannon-3",
+          "behavior": "ground",
+          "ranges": [[0, 1]]
+        }
+      ]
     }
   },
 
@@ -278,6 +294,15 @@
           ]
         }
       ]
+    },
+    {
+      "tiles": [
+        {
+          "type": "PATTERN",
+          "pattern": "cannon-2h",
+          "ranges": [[6, 7]]
+        }
+      ]
     }
   ],
 
@@ -289,6 +314,10 @@
     {
       "name": "goomba",
       "pos": [220, 0]
+    },
+    {
+      "name": "cannon",
+      "pos": [96, 112]
     }
   ]
 }

@@ -1,29 +1,17 @@
 import { Camera } from './camera';
 import { loadEntities } from './entities';
-import { PlayerController } from './entities/player-controller';
-import { Entity } from './entity';
 import { setupKeyboard } from './input';
 import { createCollisionLayer } from './layers/collision';
 import { createDashboardLayer } from './layers/dashboard';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
+import { createPlayer, createPlayerEnv } from './player';
 import { Timer } from './timer';
 
 export type GameContext = {
   readonly audioContext: AudioContext;
   deltaTime: number | null;
 };
-
-function createPlayerEnv(playerEntity: Entity) {
-  const playerEnv = new Entity();
-  const playerController = new PlayerController();
-  playerController.checkpoint.set(64, 64);
-
-  playerController.setPlayer(playerEntity);
-  playerEnv.addTrait(playerController);
-
-  return playerEnv;
-}
 
 async function main(context: CanvasRenderingContext2D) {
   const audioContext = new AudioContext();
@@ -34,7 +22,7 @@ async function main(context: CanvasRenderingContext2D) {
 
   const camera = new Camera();
 
-  const mario = entityFactory.mario();
+  const mario = createPlayer(entityFactory.mario());
 
   const playerEnv = createPlayerEnv(mario);
   level.addEntity(playerEnv);

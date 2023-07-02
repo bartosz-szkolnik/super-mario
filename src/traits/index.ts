@@ -5,3 +5,7 @@ export * from './stomper';
 export * from './killable';
 export * from './physics';
 export * from './solid';
+export * from './velocity';
+export * from './gravity';
+export * from './emitter';
+export * from './player';

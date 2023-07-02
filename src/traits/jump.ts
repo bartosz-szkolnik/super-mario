@@ -35,7 +35,7 @@ export class Jump extends Trait {
   update(entity: Entity, { deltaTime }: GameContext) {
     if (this.requestTime > 0) {
       if (this.ready > 0) {
-        this.sounds.add('jump');
+        entity.sounds.add('jump');
         this.engageTime = ALLOWED_JUMP_DURATION;
         this.requestTime = 0;
       }

@@ -36,6 +36,11 @@ export class Vec2 {
     this.y = y;
   }
 
+  copy(vec2: Vec2) {
+    this.x = vec2.x;
+    this.y = vec2.y;
+  }
+
   static isVec2(value: unknown): value is Vec2 {
     if (!value) {
       return false;

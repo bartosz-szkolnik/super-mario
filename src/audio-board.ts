@@ -12,7 +12,7 @@ export class AudioBoard {
     }
 
     const gainNode = context.createGain();
-    gainNode.gain.value = 0.8;
+    gainNode.gain.value = 0.3;
     gainNode.connect(context.destination);
 
     const source = context.createBufferSource();
