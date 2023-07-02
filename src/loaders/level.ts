@@ -1,7 +1,7 @@
 import type { EntityFactory } from '../entities';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
-import { type CollisionTile, Level, type Tile } from '../level';
+import { Level, type Tile } from '../level';
 import { loadJSON, loadSpriteSheet } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
@@ -14,7 +14,6 @@ export function createLevelLoader(entityFactory: EntityFactory) {
 
     const level = new Level();
 
-    setupCollision(levelSpec, level);
     setupBackgrounds(levelSpec, level, backgroundSprites);
     setupEntities(levelSpec, level, entityFactory);
 
@@ -22,19 +21,12 @@ export function createLevelLoader(entityFactory: EntityFactory) {
   };
 }
 
-function setupCollision(levelSpec: LevelSpec, level: Level) {
-  const mergedTiles = levelSpec.layers.reduce((mergedTiles, layerSpec) => {
-    return mergedTiles.concat(layerSpec.tiles);
-  }, [] as TileSpec[]);
-  const collisionGrid = createCollisionGrid(mergedTiles, levelSpec.patterns);
-  level.setCollisionGrid(collisionGrid);
-}
-
 function setupBackgrounds(levelSpec: LevelSpec, level: Level, backgroundSprites: SpriteSheet) {
   levelSpec.layers.forEach(layer => {
-    const backgroundGrid = createBackgroundGrid(layer.tiles, levelSpec.patterns);
-    const backgroundLayer = createBackgroundLayer(level, backgroundGrid, backgroundSprites);
+    const grid = createGrid(layer.tiles, levelSpec.patterns);
+    const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
     level.addLayer(backgroundLayer);
+    level.tileCollider.addGrid(grid);
   });
 }
 
@@ -50,17 +42,7 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
   level.addLayer(spriteLayer);
 }
 
-function createCollisionGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
-  const grid = new Matrix<CollisionTile>();
-
-  for (const { tile, x, y } of expandTiles(tiles, patterns)) {
-    grid.set(x, y, { type: tile.behavior });
-  }
-
-  return grid;
-}
-
-function createBackgroundGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
+function createGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
   const grid = new Matrix<Tile>();
 
   for (const { tile, x, y } of expandTiles(tiles, patterns)) {
@@ -68,7 +50,7 @@ function createBackgroundGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']
     if (tile.type === 'PATTERN') {
       throw new Error('Found a pattern somewhere it should not be found.');
     }
-    grid.set(x, y, { name: tile.name });
+    grid.set(x, y, { ...tile, type: tile.behavior });
   }
 
   return grid;

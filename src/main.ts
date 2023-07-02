@@ -1,5 +1,5 @@
 import { Camera } from './camera';
-import { loadEntities } from './entities';
+import { EntityFactory, loadEntities } from './entities';
 import { setupKeyboard } from './input';
 import { createCollisionLayer } from './layers/collision';
 import { createDashboardLayer } from './layers/dashboard';
@@ -10,6 +10,7 @@ import { Timer } from './timer';
 
 export type GameContext = {
   readonly audioContext: AudioContext;
+  readonly entityFactory: EntityFactory;
   deltaTime: number | null;
 };
 
@@ -32,6 +33,7 @@ async function main(context: CanvasRenderingContext2D) {
 
   const gameContext: GameContext = {
     audioContext,
+    entityFactory,
     deltaTime: null,
   };
 

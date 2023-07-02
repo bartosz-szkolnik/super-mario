@@ -180,7 +180,7 @@
         {
           "type": "TILE",
           "name": "bricks",
-          "behavior": "ground",
+          "behavior": "brick",
           "ranges": [
             [27, 5, 9],
             [83, 3, 9],

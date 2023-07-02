@@ -3,7 +3,6 @@ import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
 import type { GameContext } from './main';
-import type { Matrix } from './math';
 import { TileCollider } from './tile-collider';
 
 export type CollisionTile = {
@@ -26,7 +25,7 @@ export class Level {
   readonly gravity = GRAVITY;
 
   private readonly entityCollider = new EntityCollider(this.entities);
-  tileCollider: TileCollider | null = null;
+  readonly tileCollider = new TileCollider();
 
   totalTime = 0;
 
@@ -64,9 +63,5 @@ export class Level {
     });
 
     this.totalTime += gameContext.deltaTime ?? 0;
-  }
-
-  setCollisionGrid(matrix: Matrix<CollisionTile>) {
-    this.tileCollider = new TileCollider(matrix);
   }
 }

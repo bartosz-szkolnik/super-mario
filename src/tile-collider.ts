@@ -1,23 +1,33 @@
 import type { Entity } from './entity';
-import type { CollisionTile } from './level';
+import type { Level, Tile } from './level';
+import { GameContext } from './main';
 import type { Matrix } from './math';
-import { TileResolver } from './tile-resolver';
+import { Match, TileResolver } from './tile-resolver';
+import { brick } from './tiles/brick';
+import { ground } from './tiles/ground';
+
+export type TileCollisionContext = {
+  entity: Entity;
+  match: Match;
+  resolver: TileResolver;
+  gameContext: GameContext;
+  level: Level;
+};
+
+const handlers = {
+  ground,
+  brick,
+} as const;
 
 export class TileCollider {
-  // fixme change to private
-  readonly tiles: TileResolver;
+  private readonly resolvers: TileResolver[] = [];
 
-  constructor(readonly tileMatrix: Matrix<CollisionTile>) {
-    this.tiles = new TileResolver(tileMatrix);
-  }
-
-  test(entity: Entity) {
-    this.checkX(entity);
-    this.checkY(entity);
+  addGrid(tileMatrix: Matrix<Tile>) {
+    this.resolvers.push(new TileResolver(tileMatrix));
   }
 
   // fixme: make private
-  checkX(entity: Entity) {
+  checkX(entity: Entity, gameContext: GameContext, level: Level) {
     const { vel, bounds } = entity;
     let x = 0;
     if (vel.x > 0) {
@@ -28,26 +38,16 @@ export class TileCollider {
       return;
     }
 
-    const matches = this.tiles.searchByRange(x, x, bounds.top, bounds.bottom);
-    matches.forEach(match => {
-      if (match.tile.type !== 'ground') {
-        return;
-      }
-
-      if (vel.x > 0) {
-        if (bounds.right > match.x1) {
-          entity.obstruct('right', match);
-        }
-      } else if (vel.x < 0) {
-        if (bounds.left < match.x2) {
-          entity.obstruct('left', match);
-        }
-      }
-    });
+    for (const resolver of this.resolvers) {
+      const matches = resolver.searchByRange(x, x, bounds.top, bounds.bottom);
+      matches.forEach(match => {
+        this.handle(0, entity, match, resolver, gameContext, level);
+      });
+    }
   }
 
   // fixme: make private
-  checkY(entity: Entity) {
+  checkY(entity: Entity, gameContext: GameContext, level: Level) {
     const { vel, bounds } = entity;
     let y = 0;
     if (vel.y > 0) {
@@ -58,21 +58,26 @@ export class TileCollider {
       return;
     }
 
-    const matches = this.tiles.searchByRange(bounds.left, bounds.right, y, y);
-    matches.forEach(match => {
-      if (match.tile.type !== 'ground') {
-        return;
-      }
+    for (const resolver of this.resolvers) {
+      const matches = resolver.searchByRange(bounds.left, bounds.right, y, y);
+      matches.forEach(match => {
+        this.handle(1, entity, match, resolver, gameContext, level);
+      });
+    }
+  }
 
-      if (vel.y > 0) {
-        if (bounds.bottom > match.y1) {
-          entity.obstruct('bottom', match);
-        }
-      } else if (vel.y < 0) {
-        if (bounds.top < match.y2) {
-          entity.obstruct('top', match);
-        }
-      }
-    });
+  handle(index: number, entity: Entity, match: Match, resolver: TileResolver, gameContext: GameContext, level: Level) {
+    const context = {
+      entity,
+      gameContext,
+      level,
+      match,
+      resolver,
+    } satisfies TileCollisionContext;
+
+    const handlerGroup = handlers[match.tile.type!];
+    if (handlerGroup) {
+      handlerGroup[index](context);
+    }
   }
 }
