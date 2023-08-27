@@ -1,26 +1,33 @@
 import type { AudioBoard } from './audio-board';
 import { BoundingBox } from './bounding-box';
-import { EventEmitter } from './event-emitter';
+import { EventBuffer, type EventName, type Listener, type Task } from './event-buffer';
 import type { Level } from './level';
 import type { GameContext } from './main';
 import { Vec2 } from './math';
 import type { Match } from './tile-resolver';
 
 type TraitCtor = new () => Trait;
-type Task = () => void;
 export type Side = 'bottom' | 'top' | 'right' | 'left';
 
 export class Trait {
-  private tasks: Task[] = [];
-  readonly events = new EventEmitter();
+  static readonly EVENT_TASK = Symbol('task');
+
+  private listeners: Listener[] = [];
 
   queue(task: Task) {
-    this.tasks.push(task);
+    this.listen(Trait.EVENT_TASK, task, 1);
   }
 
-  finalize() {
-    this.tasks.forEach(task => task());
-    this.tasks = [];
+  finalize(entity: Entity) {
+    this.listeners = this.listeners.filter(({ name, callback, count }) => {
+      entity.events.process(name, callback);
+      return --count;
+    });
+  }
+
+  listen(name: EventName, callback: Task, count = Infinity) {
+    const listener = { name, callback, count } satisfies Listener;
+    this.listeners.push(listener);
   }
 
   update(_entity: Entity, _gameContext: GameContext, _level: Level) {}
@@ -31,6 +38,8 @@ export class Trait {
 export class Entity {
   private readonly traits = new Map<TraitCtor, Trait>();
   readonly sounds = new Set<string>();
+
+  readonly events = new EventBuffer();
 
   readonly pos = new Vec2(0, 0);
   readonly vel = new Vec2(0, 0);
@@ -81,9 +90,13 @@ export class Entity {
   }
 
   finalize() {
+    this.events.emit(Trait.EVENT_TASK);
+
     this.traits.forEach(trait => {
-      trait.finalize();
+      trait.finalize(this);
     });
+
+    this.events.clear();
   }
 
   playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
