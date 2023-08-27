@@ -1,0 +1,36 @@
+{
+  "spriteSheet": "underworld",
+  "musicSheet": "silent",
+
+  "patterns": [],
+
+  "layers": [
+    {
+      "tiles": [
+        {
+          "type": "TILE",
+          "name": "sky",
+          "ranges": [[0, 212, 0, 13]]
+        },
+        {
+          "type": "TILE",
+          "name": "ground",
+          "behavior": "ground",
+          "ranges": [[0, 212, 13, 2]]
+        }
+      ]
+    },
+    {
+      "tiles": [
+        {
+          "type": "TILE",
+          "name": "coin",
+          "behavior": "coin",
+          "ranges": [[6, 100, 8, 5]]
+        }
+      ]
+    }
+  ],
+
+  "entities": []
+}

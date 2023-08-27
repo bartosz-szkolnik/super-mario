@@ -35,7 +35,7 @@ export type SpriteSpec = {
     rect: [number, number, number, number];
   }[];
   animations?: {
-    name: 'chance';
+    name: 'chance' | 'coin';
     frameLength: number;
     frames: string[];
   }[];

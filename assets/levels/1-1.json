@@ -221,6 +221,12 @@
         },
         {
           "type": "TILE",
+          "name": "coin",
+          "behavior": "coin",
+          "ranges": [[0, 0]]
+        },
+        {
+          "type": "TILE",
           "name": "chocolate",
           "behavior": "ground",
           "ranges": [

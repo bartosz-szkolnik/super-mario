@@ -4,6 +4,7 @@ import { GameContext } from './main';
 import type { Matrix } from './math';
 import { Match, TileResolver } from './tile-resolver';
 import { brick } from './tiles/brick';
+import { coin } from './tiles/coin';
 import { ground } from './tiles/ground';
 
 export type TileCollisionContext = {
@@ -17,6 +18,7 @@ export type TileCollisionContext = {
 const handlers = {
   ground,
   brick,
+  coin,
 } as const;
 
 export class TileCollider {

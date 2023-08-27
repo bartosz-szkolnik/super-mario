@@ -9,12 +9,13 @@ const SECOND_LINE = 16;
 
 export function createDashboardLayer(font: Font, level: Level) {
   return function drawDashboard(context: CanvasRenderingContext2D) {
-    const { score, coins, name } = getPlayerTrait(level) ?? { score: 0, coins: 0, name: 'UNNAMED' };
+    const { score, coins, name, lives } = getPlayerTrait(level) ?? { score: 0, coins: 0, name: 'UNNAMED', lives: 3 };
     const { currentTime } = getTimerTrait(level) ?? { currentTime: 300 };
 
     font.print(name, context, 16, FIRST_LINE);
     font.print(String(score).padStart(6, '0'), context, 16, SECOND_LINE);
 
+    font.print('+ ' + String(lives).padStart(2, '0'), context, 96, FIRST_LINE);
     font.print('@x' + coins.toString().padStart(2, '0'), context, 96, SECOND_LINE);
 
     font.print('WORLD', context, 152, FIRST_LINE);
