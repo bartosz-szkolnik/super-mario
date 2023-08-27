@@ -1,0 +1,132 @@
+{
+  "pipe-section-vert": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "name": "pipe-vert-left",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "pipe-vert-right",
+        "behavior": "ground",
+        "ranges": [[1, 0]]
+      }
+    ]
+  },
+  "pipe-cap-vert": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "name": "pipe-insert-vert-left",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "pipe-insert-vert-right",
+        "behavior": "ground",
+        "ranges": [[1, 0]]
+      }
+    ]
+  },
+  "pipe-2h": {
+    "tiles": [
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-cap-vert",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-section-vert",
+        "behavior": "ground",
+        "ranges": [[0, 1, 1, 1]]
+      }
+    ]
+  },
+  "pipe-3h": {
+    "tiles": [
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-cap-vert",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-section-vert",
+        "behavior": "ground",
+        "ranges": [[0, 1, 1, 2]]
+      }
+    ]
+  },
+  "pipe-4h": {
+    "tiles": [
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-cap-vert",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "PATTERN",
+        "pattern": "pipe-section-vert",
+        "behavior": "ground",
+        "ranges": [[0, 1, 1, 3]]
+      }
+    ]
+  },
+  "cloud-single": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "name": "cloud-1-1",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "cloud-1-2",
+        "ranges": [[1, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "cloud-1-3",
+        "ranges": [[2, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "cloud-2-1",
+        "ranges": [[0, 1]]
+      },
+      {
+        "type": "TILE",
+        "name": "cloud-2-2",
+        "ranges": [[1, 1]]
+      },
+      {
+        "type": "TILE",
+        "name": "cloud-2-3",
+        "ranges": [[2, 1]]
+      }
+    ]
+  },
+  "cannon-2h": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "name": "cannon-1",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "name": "cannon-3",
+        "behavior": "ground",
+        "ranges": [[0, 1]]
+      }
+    ]
+  }
+}

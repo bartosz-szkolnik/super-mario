@@ -13,25 +13,15 @@ export type EntityFactory = {
 };
 
 export async function loadEntities(audioContext: AudioContext) {
-  // fixme later
-  let entityFactory = {} as any;
-
-  return Promise.all([
-    loadMario(audioContext),
-    loadGoomba(),
-    loadKoopa(),
-    loadBullet(),
-    loadCannon(audioContext, entityFactory),
-  ]).then(([createMario, createGoomba, createKoopa, createBullet, createCannon]) => {
-    const e = {
-      mario: createMario,
-      goomba: createGoomba,
-      koopa: createKoopa,
-      bullet: createBullet,
-      cannon: createCannon,
-    } satisfies EntityFactory;
-    entityFactory = Object.assign(entityFactory, e);
-
-    return e;
-  });
+  return Promise.all([loadMario(audioContext), loadGoomba(), loadKoopa(), loadBullet(), loadCannon(audioContext)]).then(
+    ([createMario, createGoomba, createKoopa, createBullet, createCannon]) => {
+      return {
+        mario: createMario,
+        goomba: createGoomba,
+        koopa: createKoopa,
+        bullet: createBullet,
+        cannon: createCannon,
+      } satisfies EntityFactory;
+    },
+  );
 }

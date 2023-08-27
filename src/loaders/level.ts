@@ -7,7 +7,7 @@ import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
 import { LevelTimer } from '../traits/level-timer';
-import type { LevelSpec, TileSpec } from '../types';
+import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
@@ -15,15 +15,16 @@ export function createLevelLoader(entityFactory: EntityFactory) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
 
-    const [backgroundSprites, musicPlayer] = await Promise.all([
+    const [backgroundSprites, musicPlayer, patterns] = await Promise.all([
       loadSpriteSheet(levelSpec.spriteSheet),
       loadMusicSheet(levelSpec.musicSheet),
+      loadPatterns(levelSpec.patternSheet),
     ]);
 
     const level = new Level();
     level.music.setPlayer(musicPlayer);
 
-    setupBackgrounds(levelSpec, level, backgroundSprites);
+    setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
     setupEntities(levelSpec, level, entityFactory);
     setupBehavior(level);
 
@@ -31,9 +32,14 @@ export function createLevelLoader(entityFactory: EntityFactory) {
   };
 }
 
-function setupBackgrounds(levelSpec: LevelSpec, level: Level, backgroundSprites: SpriteSheet) {
+function setupBackgrounds(
+  levelSpec: LevelSpec,
+  level: Level,
+  backgroundSprites: SpriteSheet,
+  patterns: PatternSheetSpec,
+) {
   levelSpec.layers.forEach(layer => {
-    const grid = createGrid(layer.tiles, levelSpec.patterns);
+    const grid = createGrid(layer.tiles, patterns);
     const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
     level.addLayer(backgroundLayer);
     level.tileCollider.addGrid(grid);
@@ -52,7 +58,7 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
   level.addLayer(spriteLayer);
 }
 
-function createGrid(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
+function createGrid(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
   const grid = new Matrix<Tile>();
 
   for (const { tile, x, y } of expandTiles(tiles, patterns)) {
@@ -77,7 +83,7 @@ function* expandSpan(xStart: number, xLen: number, yStart: number, yLen: number)
   }
 }
 
-function expandRange(range: TileSpec['ranges'][0]) {
+function expandRange(range: TilePatternSpec['ranges'][0]) {
   if (range.length === 4) {
     const [xStart, xLen, yStart, yLen] = range;
     return expandSpan(xStart, xLen, yStart, yLen);
@@ -96,16 +102,16 @@ function expandRange(range: TileSpec['ranges'][0]) {
   throw new Error('You have more than 4 or less than 2 numbers in your ranges prop.');
 }
 
-function* expandRanges(ranges: TileSpec['ranges']) {
+function* expandRanges(ranges: TilePatternSpec['ranges']) {
   for (const range of ranges) {
     yield* expandRange(range);
   }
 }
 
-type ExpandedTiles = { tile: TileSpec; x: number; y: number };
+type ExpandedTiles = { tile: TilePatternSpec; x: number; y: number };
 
-function* expandTiles(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
-  function* walkTiles(tiles: TileSpec[], offsetX: number, offsetY: number): Generator<ExpandedTiles> {
+function* expandTiles(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
+  function* walkTiles(tiles: TilePatternSpec[], offsetX: number, offsetY: number): Generator<ExpandedTiles> {
     for (const tile of tiles) {
       for (const { x, y } of expandRanges(tile.ranges)) {
         const derivedX = x + offsetX;
@@ -141,4 +147,13 @@ function setupBehavior(level: Level) {
   level.events.listen(LevelTimer.EVENT_TIMER_HURRY, () => {
     level.music.playHurryTheme();
   });
+}
+
+function loadPatterns(name: string): Promise<PatternSheetSpec> {
+  if (!name) {
+    console.warn(`No patterns file called ${name} found.`);
+    return Promise.resolve({});
+  }
+
+  return loadJSON<PatternSheetSpec>(`assets/sprites/patterns/${name}.json`);
 }

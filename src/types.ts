@@ -1,24 +1,24 @@
-export type TileSpec =
-  | {
-      type: 'TILE';
-      name: 'ground' | 'sky';
-      behavior?: 'ground';
-      ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
-    }
-  | TilePatternSpec;
-
-export type TilePatternSpec = {
-  type: 'PATTERN';
-  pattern: string;
-  behavior?: 'ground';
+export type TileSpec = {
+  type: 'TILE';
+  name: string;
+  behavior?: string;
   ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
 };
+
+export type PatternSpec = {
+  type: 'PATTERN';
+  pattern: string;
+  behavior?: string;
+  ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
+};
+
+export type TilePatternSpec = TileSpec | PatternSpec;
 
 export type LevelSpec = {
   spriteSheet: string;
   musicSheet: string;
-  layers: { tiles: TileSpec[] }[];
-  patterns: Record<string, { tiles: TileSpec[] }>;
+  patternSheet: string;
+  layers: { tiles: TilePatternSpec[] }[];
   entities: { name: 'goomba' | 'koopa'; pos: [number, number] }[];
 };
 
@@ -41,12 +41,17 @@ export type SpriteSpec = {
   }[];
 };
 
+export type PatternSheetSpec = Record<string, { tiles: TilePatternSpec[] }>;
+
 export type AudioSheetSpec = {
   fx: Record<string, { url: string }>;
 };
 
 export type MusicSheetSpec = {
   main: {
+    url: string;
+  };
+  hurry: {
     url: string;
   };
 };

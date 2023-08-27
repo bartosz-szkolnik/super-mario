@@ -8,12 +8,11 @@ import { MusicController } from './music-controller';
 import { TileCollider } from './tile-collider';
 
 export type CollisionTile = {
-  type?: 'ground';
+  type?: string;
 };
 
 export type BackgroundTile = {
-  // name: string;
-  name: 'sky' | 'ground' | 'chance';
+  name: string;
 };
 
 export type Tile = BackgroundTile & CollisionTile;

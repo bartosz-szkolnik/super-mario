@@ -1,20 +1,20 @@
 import type { AudioBoard } from '../audio-board';
-import { EntityFactory } from '../entities';
 import { Entity } from '../entity';
 import type { Level } from '../level';
 import { loadAudioBoard } from '../loaders/audio';
+import type { GameContext } from '../main';
 import { findPlayers } from '../player';
 import { Emitter } from '../traits';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
-export async function loadCannon(audioContext: AudioContext, entityFactories: EntityFactory) {
+export async function loadCannon(audioContext: AudioContext) {
   const audio = await loadAudioBoard('cannon', audioContext);
-  return createCannonFactory(audio, entityFactories);
+  return createCannonFactory(audio);
 }
 
-function createCannonFactory(audio: AudioBoard, entityFactories: EntityFactory) {
-  function emitBullet(cannon: Entity, level: Level) {
+function createCannonFactory(audio: AudioBoard) {
+  function emitBullet(cannon: Entity, { entityFactory }: GameContext, level: Level) {
     let dir = 1;
     for (const player of findPlayers(level)) {
       if (player.pos.x > cannon.pos.x - HOLD_FIRE_THRESHOLD && player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD) {
@@ -26,7 +26,7 @@ function createCannonFactory(audio: AudioBoard, entityFactories: EntityFactory) 
       }
     }
 
-    const bullet = entityFactories.bullet();
+    const bullet = entityFactory.bullet();
     bullet.pos.copy(cannon.pos);
     bullet.vel.set(80 * dir, 0);
 

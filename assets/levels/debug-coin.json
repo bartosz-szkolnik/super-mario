@@ -2,7 +2,7 @@
   "spriteSheet": "underworld",
   "musicSheet": "silent",
 
-  "patterns": [],
+  "patternSheet": "",
 
   "layers": [
     {

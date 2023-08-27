@@ -77,7 +77,7 @@ export class TileCollider {
       resolver,
     } satisfies TileCollisionContext;
 
-    const handlerGroup = handlers[match.tile.type!];
+    const handlerGroup = handlers[match.tile.type! as keyof typeof handlers];
     if (handlerGroup) {
       handlerGroup[index](context);
     }

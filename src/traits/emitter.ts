@@ -2,7 +2,7 @@ import { type Entity, Trait } from '../entity';
 import type { Level } from '../level';
 import type { GameContext } from '../main';
 
-type EmitterFn = (entity: Entity, level: Level) => void;
+type EmitterFn = (entity: Entity, gameContext: GameContext, level: Level) => void;
 
 const INTERVAL = 4;
 
@@ -10,10 +10,11 @@ export class Emitter extends Trait {
   private coolDown = INTERVAL;
   private readonly emitters: EmitterFn[] = [];
 
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
+  update(entity: Entity, gameContext: GameContext, level: Level) {
+    const { deltaTime } = gameContext;
     this.coolDown -= deltaTime ?? 0;
     if (this.coolDown <= 0) {
-      this.emit(entity, level);
+      this.emit(entity, gameContext, level);
       this.coolDown = INTERVAL;
     }
   }
@@ -22,9 +23,9 @@ export class Emitter extends Trait {
     this.emitters.push(emitter);
   }
 
-  private emit(entity: Entity, level: Level) {
+  private emit(entity: Entity, gameContext: GameContext, level: Level) {
     for (const emitter of this.emitters) {
-      emitter(entity, level);
+      emitter(entity, gameContext, level);
     }
   }
 }
