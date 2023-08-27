@@ -2,6 +2,7 @@ import type { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
+import { EventEmitter } from './event-emitter';
 import type { GameContext } from './main';
 import { MusicController } from './music-controller';
 import { TileCollider } from './tile-collider';
@@ -30,7 +31,8 @@ export class Level {
 
   totalTime = 0;
 
-  readonly musicController = new MusicController();
+  readonly music = new MusicController();
+  readonly events = new EventEmitter();
 
   addLayer(layer: Layer) {
     this.compositor.addLayer(layer);

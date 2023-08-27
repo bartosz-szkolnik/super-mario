@@ -1,10 +1,12 @@
 import type { EntityFactory } from '../entities';
+import { Entity } from '../entity';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
+import { LevelTimer } from '../traits/level-timer';
 import type { LevelSpec, TileSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
@@ -19,10 +21,11 @@ export function createLevelLoader(entityFactory: EntityFactory) {
     ]);
 
     const level = new Level();
-    level.musicController.setPlayer(musicPlayer);
+    level.music.setPlayer(musicPlayer);
 
     setupBackgrounds(levelSpec, level, backgroundSprites);
     setupEntities(levelSpec, level, entityFactory);
+    setupBehavior(level);
 
     return level;
   };
@@ -119,4 +122,23 @@ function* expandTiles(tiles: TileSpec[], patterns: LevelSpec['patterns']) {
   }
 
   yield* walkTiles(tiles, 0, 0);
+}
+
+function createTimer() {
+  const timer = new Entity();
+  timer.addTrait(new LevelTimer());
+
+  return timer;
+}
+
+function setupBehavior(level: Level) {
+  const timer = createTimer();
+  level.entities.add(timer);
+
+  level.events.listen(LevelTimer.EVENT_TIMER_OK, () => {
+    level.music.playTheme();
+  });
+  level.events.listen(LevelTimer.EVENT_TIMER_HURRY, () => {
+    level.music.playHurryTheme();
+  });
 }

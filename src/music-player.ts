@@ -11,6 +11,10 @@ export class MusicPlayer {
   }
 
   playTrack(name: string) {
+    for (const audio of this.tracks.values()) {
+      audio.pause();
+    }
+
     const audio = this.tracks.get(name);
     if (!audio) {
       console.warn(`No music file named ${name} found.`);
@@ -18,5 +22,6 @@ export class MusicPlayer {
     }
 
     audio.play();
+    return audio;
   }
 }

@@ -7,6 +7,7 @@ import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
 import { createPlayer, createPlayerEnv } from './player';
 import { Timer } from './timer';
+import { Player } from './traits';
 
 export type GameContext = {
   readonly audioContext: AudioContext;
@@ -24,6 +25,8 @@ async function main(context: CanvasRenderingContext2D) {
   const camera = new Camera();
 
   const mario = createPlayer(entityFactory.mario());
+  mario.get(Player).name = 'MARIO';
+  level.addEntity(mario);
 
   const playerEnv = createPlayerEnv(mario);
   level.addEntity(playerEnv);
@@ -38,7 +41,7 @@ async function main(context: CanvasRenderingContext2D) {
   };
 
   level.addLayer(createCollisionLayer(level));
-  level.addLayer(createDashboardLayer(font, playerEnv));
+  level.addLayer(createDashboardLayer(font, level));
 
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {
@@ -49,7 +52,6 @@ async function main(context: CanvasRenderingContext2D) {
   });
 
   timer.start();
-  level.musicController.player?.playTrack('main');
 }
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement | null;
