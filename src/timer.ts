@@ -6,22 +6,24 @@ export class Timer {
 
   constructor(deltaTime = 1 / 60) {
     let accumulatedTime = 0;
-    let lastTime = 0;
+    let lastTime: number | null = null;
 
     this.updateProxy = (time: number) => {
-      accumulatedTime += (time - lastTime) / 1000;
+      if (lastTime) {
+        accumulatedTime += (time - lastTime) / 1000;
 
-      if (accumulatedTime > 1) {
-        accumulatedTime = 1;
+        if (accumulatedTime > 1) {
+          accumulatedTime = 1;
+        }
+
+        while (accumulatedTime > deltaTime) {
+          this.updateFn(deltaTime);
+          accumulatedTime -= deltaTime;
+        }
       }
 
-      while (accumulatedTime > deltaTime) {
-        this.updateFn(deltaTime);
-        accumulatedTime -= deltaTime;
-      }
-
-      this.enqueue();
       lastTime = time;
+      this.enqueue();
     };
 
     // fixme: remove later, this is just for developers convenience

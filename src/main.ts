@@ -1,4 +1,3 @@
-import { Camera } from './camera';
 import { EntityFactory, loadEntities } from './entities';
 import { setupKeyboard } from './input';
 import { createCollisionLayer } from './layers/collision';
@@ -6,23 +5,26 @@ import { createDashboardLayer } from './layers/dashboard';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
 import { createPlayer, createPlayerEnv } from './player';
+import { SceneRunner } from './scene-runner';
 import { Timer } from './timer';
 import { Player } from './traits';
 
 export type GameContext = {
+  readonly videoContext: CanvasRenderingContext2D;
   readonly audioContext: AudioContext;
   readonly entityFactory: EntityFactory;
   deltaTime: number | null;
 };
 
-async function main(context: CanvasRenderingContext2D) {
+async function main(videoContext: CanvasRenderingContext2D) {
   const audioContext = new AudioContext();
   const [entityFactory, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
 
   const loadLevel = createLevelLoader(entityFactory);
-  const level = await loadLevel('1-1');
 
-  const camera = new Camera();
+  const sceneRunner = new SceneRunner();
+
+  const level = await loadLevel('1-2');
 
   const mario = createPlayer(entityFactory.mario());
   mario.get(Player).name = 'MARIO';
@@ -31,10 +33,12 @@ async function main(context: CanvasRenderingContext2D) {
   const playerEnv = createPlayerEnv(mario);
   level.addEntity(playerEnv);
 
-  const input = setupKeyboard(mario);
-  input.listenTo(window);
+  const inputRouter = setupKeyboard(window);
+  inputRouter.addReceiver(mario);
+  sceneRunner.addScene(level);
 
   const gameContext: GameContext = {
+    videoContext,
     audioContext,
     entityFactory,
     deltaTime: null,
@@ -46,12 +50,11 @@ async function main(context: CanvasRenderingContext2D) {
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {
     gameContext.deltaTime = deltaTime;
-    level.update(gameContext);
-    camera.pos.x = Math.max(0, mario.pos.x - 100);
-    level.draw(context!, camera);
+    sceneRunner.update(gameContext);
   });
 
   timer.start();
+  sceneRunner.runNext();
 }
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement | null;
@@ -64,9 +67,4 @@ if (!context) {
   throw new Error('Context on the canvas not initialized properly.');
 }
 
-function start() {
-  window.removeEventListener('click', start);
-  main(context!);
-}
-
-window.addEventListener('click', start);
+window.addEventListener('click', () => main(context), { once: true });

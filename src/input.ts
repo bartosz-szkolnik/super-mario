@@ -1,4 +1,4 @@
-import type { Entity } from './entity';
+import { InputRouter } from './input-router';
 import { KeyboardState } from './keyboard-state';
 import { Go, Jump } from './traits';
 
@@ -7,28 +7,31 @@ const LEFT_ARROW_KEY = 'ArrowLeft';
 const RIGHT_ARROW_KEY = 'ArrowRight';
 const LEFT_SHIFT_KEY = 'ShiftLeft';
 
-export function setupKeyboard(mario: Entity) {
+export function setupKeyboard(window: Window) {
   const input = new KeyboardState();
+  const router = new InputRouter();
+
+  input.listenTo(window);
 
   input.addMapping(SPACE_KEY, keyState => {
     if (keyState) {
-      mario.get(Jump).start();
+      router.route(entity => entity.get(Jump).start());
     } else {
-      mario.get(Jump).cancel();
+      router.route(entity => entity.get(Jump).cancel());
     }
   });
 
   input.addMapping(LEFT_SHIFT_KEY, keyState => {
-    mario.turbo(Boolean(keyState));
+    router.route(entity => entity.turbo(Boolean(keyState)));
   });
 
   input.addMapping(RIGHT_ARROW_KEY, keyState => {
-    mario.get(Go).dir += keyState ? 1 : -1;
+    router.route(entity => (entity.get(Go).dir += keyState ? 1 : -1));
   });
 
   input.addMapping(LEFT_ARROW_KEY, keyState => {
-    mario.get(Go).dir += keyState ? -1 : 1;
+    router.route(entity => (entity.get(Go).dir += keyState ? -1 : 1));
   });
 
-  return input;
+  return router;
 }

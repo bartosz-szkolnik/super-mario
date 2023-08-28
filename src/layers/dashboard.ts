@@ -19,7 +19,7 @@ export function createDashboardLayer(font: Font, level: Level) {
     font.print('@x' + coins.toString().padStart(2, '0'), context, 96, SECOND_LINE);
 
     font.print('WORLD', context, 152, FIRST_LINE);
-    font.print('1-1', context, 152, SECOND_LINE);
+    font.print(level.name, context, 152, SECOND_LINE);
 
     font.print('TIME', context, 208, FIRST_LINE);
     font.print(String(currentTime.toFixed()).padStart(3, '0'), context, 216, SECOND_LINE);

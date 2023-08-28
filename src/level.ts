@@ -1,10 +1,12 @@
-import type { Camera } from './camera';
+import { Camera } from './camera';
 import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
 import { EventEmitter } from './event-emitter';
 import type { GameContext } from './main';
 import { MusicController } from './music-controller';
+import { findPlayers } from './player';
+import { Scene } from './scene-runner';
 import { TileCollider } from './tile-collider';
 
 export type CollisionTile = {
@@ -19,7 +21,7 @@ export type Tile = BackgroundTile & CollisionTile;
 
 const GRAVITY = 1500;
 
-export class Level {
+export class Level implements Scene {
   private readonly compositor = new Compositor();
   // fixme make private
   readonly entities = new Set<Entity>();
@@ -29,9 +31,11 @@ export class Level {
   readonly tileCollider = new TileCollider();
 
   totalTime = 0;
+  name = '';
 
   readonly music = new MusicController();
   readonly events = new EventEmitter();
+  readonly camera = new Camera();
 
   addLayer(layer: Layer) {
     this.compositor.addLayer(layer);
@@ -49,8 +53,8 @@ export class Level {
     return this.entities.has(entity);
   }
 
-  draw(context: CanvasRenderingContext2D, camera: Camera) {
-    this.compositor.draw(context, camera);
+  draw({ videoContext }: GameContext) {
+    this.compositor.draw(videoContext, this.camera);
   }
 
   update(gameContext: GameContext) {
@@ -66,6 +70,14 @@ export class Level {
       entity.finalize();
     });
 
+    focusPlayer(this);
+
     this.totalTime += gameContext.deltaTime ?? 0;
+  }
+}
+
+function focusPlayer(level: Level) {
+  for (const player of findPlayers(level)) {
+    level.camera.pos.x = Math.max(0, player.pos.x - 100);
   }
 }
