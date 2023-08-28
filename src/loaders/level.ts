@@ -7,6 +7,7 @@ import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
 import { LevelTimer } from '../traits/level-timer';
+import { Trigger } from '../traits/trigger';
 import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
@@ -27,6 +28,7 @@ export function createLevelLoader(entityFactory: EntityFactory) {
 
     setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
     setupEntities(levelSpec, level, entityFactory);
+    setupTriggers(levelSpec, level);
     setupBehavior(level);
 
     return level;
@@ -52,11 +54,28 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
     const createEntity = entityFactory[name];
     const entity = createEntity();
     entity.pos.set(x, y);
-    level.entities.add(entity);
+    level.addEntity(entity);
   });
 
   const spriteLayer = createSpriteLayer(level.entities);
   level.addLayer(spriteLayer);
+}
+
+function setupTriggers(levelSpec: LevelSpec, level: Level) {
+  if (!levelSpec.triggers) {
+    return;
+  }
+
+  for (const triggerSpec of levelSpec.triggers) {
+    const entity = createTrigger();
+    entity.get(Trigger).addCondition((entity, touches, _gc, level) => {
+      level.events.emit(Level.EVENT_TRIGGER, triggerSpec, entity, touches);
+    });
+
+    entity.size.set(64, 64);
+    entity.pos.set(...triggerSpec.pos);
+    level.addEntity(entity);
+  }
 }
 
 function createGrid(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
@@ -138,9 +157,16 @@ function createTimer() {
   return timer;
 }
 
+function createTrigger() {
+  const entity = new Entity();
+  entity.addTrait(new Trigger());
+
+  return entity;
+}
+
 function setupBehavior(level: Level) {
   const timer = createTimer();
-  level.entities.add(timer);
+  level.addEntity(timer);
 
   level.events.listen(LevelTimer.EVENT_TIMER_OK, () => {
     level.music.playTheme();

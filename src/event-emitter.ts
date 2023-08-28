@@ -1,6 +1,6 @@
 import { EventName } from './event-buffer';
 
-export type Fn = (...args: unknown[]) => void;
+export type Fn = (...args: any[]) => void;
 export type Listener = { name: EventName; callback: Fn };
 
 export class EventEmitter {
@@ -11,7 +11,7 @@ export class EventEmitter {
     this.listeners.push(listener);
   }
 
-  emit(name: EventName, ...args: unknown[]) {
+  emit(name: EventName, ...args: any[]) {
     this.listeners.forEach(listener => {
       if (listener.name === name) {
         listener.callback(...args);

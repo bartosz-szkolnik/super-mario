@@ -21,5 +21,12 @@
     }
   ],
 
-  "entities": []
+  "entities": [],
+  "triggers": [
+    {
+      "type": "GOTO",
+      "name": "1-1",
+      "pos": [64, 64]
+    }
+  ]
 }

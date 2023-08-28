@@ -5,7 +5,7 @@ const CHARACTERS = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ
 const SIZE = 8;
 
 export class Font {
-  constructor(private sprites: SpriteSheet, private size: number) {}
+  constructor(private sprites: SpriteSheet, public size: number) {}
 
   print(text: string, context: CanvasRenderingContext2D, x: number, y: number) {
     [...text].forEach((char, pos) => {

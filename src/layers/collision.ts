@@ -14,7 +14,7 @@ export function createCollisionLayer(level: Level): Layer {
   };
 }
 
-function createEntityLayer(entities: Set<Entity>) {
+function createEntityLayer(entities: Set<Entity>): Layer {
   return function drawBoundingBox(context: CanvasRenderingContext2D, camera: Camera) {
     context.strokeStyle = 'green';
     entities.forEach(entity => {
@@ -25,7 +25,7 @@ function createEntityLayer(entities: Set<Entity>) {
   };
 }
 
-function createTileCandidateLayer(tileResolver: TileResolver | null) {
+function createTileCandidateLayer(tileResolver: TileResolver | null): Layer {
   let resolvedTiles: { x: number; y: number }[] = [];
   const tileSize = tileResolver?.tileSize ?? 16;
 

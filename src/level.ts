@@ -1,12 +1,10 @@
 import { Camera } from './camera';
-import { Compositor, type Layer } from './compositor';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
-import { EventEmitter } from './event-emitter';
 import type { GameContext } from './main';
 import { MusicController } from './music-controller';
 import { findPlayers } from './player';
-import { Scene } from './scene-runner';
+import { Scene } from './scene';
 import { TileCollider } from './tile-collider';
 
 export type CollisionTile = {
@@ -21,25 +19,20 @@ export type Tile = BackgroundTile & CollisionTile;
 
 const GRAVITY = 1500;
 
-export class Level implements Scene {
-  private readonly compositor = new Compositor();
-  // fixme make private
+export class Level extends Scene {
+  static EVENT_TRIGGER = Symbol('trigger');
+
   readonly entities = new Set<Entity>();
   readonly gravity = GRAVITY;
+
+  readonly music = new MusicController();
+  readonly camera = new Camera();
 
   private readonly entityCollider = new EntityCollider(this.entities);
   readonly tileCollider = new TileCollider();
 
   totalTime = 0;
   name = '';
-
-  readonly music = new MusicController();
-  readonly events = new EventEmitter();
-  readonly camera = new Camera();
-
-  addLayer(layer: Layer) {
-    this.compositor.addLayer(layer);
-  }
 
   addEntity(entity: Entity) {
     this.entities.add(entity);
@@ -73,6 +66,10 @@ export class Level implements Scene {
     focusPlayer(this);
 
     this.totalTime += gameContext.deltaTime ?? 0;
+  }
+
+  pause() {
+    this.music.pause();
   }
 }
 

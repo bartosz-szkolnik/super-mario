@@ -4,13 +4,18 @@ import { findPlayers } from '../player';
 import { Player } from '../traits';
 import { LevelTimer } from '../traits/level-timer';
 
+// should be based on font.size... fix later
 const FIRST_LINE = 8;
 const SECOND_LINE = 16;
 
 export function createDashboardLayer(font: Font, level: Level) {
+  const timerTrait = getTimerTrait(level) ?? { currentTime: 300 };
+
   return function drawDashboard(context: CanvasRenderingContext2D) {
-    const { score, coins, name, lives } = getPlayerTrait(level) ?? { score: 0, coins: 0, name: 'UNNAMED', lives: 3 };
-    const { currentTime } = getTimerTrait(level) ?? { currentTime: 300 };
+    const playerTrait = getPlayerTrait(level) ?? { score: 0, coins: 0, name: 'UNNAMED', lives: 3 };
+
+    const { score, coins, name, lives } = playerTrait;
+    const { currentTime } = timerTrait;
 
     font.print(name, context, 16, FIRST_LINE);
     font.print(String(score).padStart(6, '0'), context, 16, SECOND_LINE);

@@ -20,6 +20,11 @@ export type LevelSpec = {
   patternSheet: string;
   layers: { tiles: TilePatternSpec[] }[];
   entities: { name: 'goomba' | 'koopa'; pos: [number, number] }[];
+  triggers: {
+    type: 'GOTO';
+    name: string;
+    pos: [number, number];
+  }[];
 };
 
 export type SpriteSpec = {

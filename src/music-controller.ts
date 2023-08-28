@@ -1,5 +1,3 @@
-import type { Level } from './level';
-import type { GameContext } from './main';
 import type { MusicPlayer } from './music-player';
 
 export class MusicController {
@@ -28,5 +26,7 @@ export class MusicController {
     audio.addEventListener('ended', () => this.playTheme(1.3), { once: true });
   }
 
-  update(_level: Level, _gameContext: GameContext) {}
+  pause() {
+    this.player?.pauseAll();
+  }
 }

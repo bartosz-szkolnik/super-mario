@@ -1,7 +1,6 @@
 {
   "spriteSheet": "underworld",
   "musicSheet": "silent",
-
   "patternSheet": "",
 
   "layers": [
@@ -19,19 +18,16 @@
           "ranges": [[0, 212, 13, 2]]
         }
       ]
-    },
-    {
-      "tiles": [
-        {
-          "type": "TILE",
-          "name": "coin",
-          "behavior": "coin",
-          "ranges": [[6, 100, 8, 5]]
-        }
-      ]
     }
   ],
 
   "entities": [],
-  "triggers": []
+
+  "triggers": [
+    {
+      "type": "GOTO",
+      "name": "1-1",
+      "pos": [64, 64]
+    }
+  ]
 }
