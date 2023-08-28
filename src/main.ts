@@ -1,4 +1,4 @@
-import { CompositionScene } from './composition-scene';
+import { TimedScene } from './timed-scene';
 import { EntityFactory, loadEntities } from './entities';
 import type { Entity } from './entity';
 import { setupKeyboard } from './input';
@@ -14,6 +14,8 @@ import { SceneRunner } from './scene-runner';
 import { Timer } from './timer';
 import { Player } from './traits';
 import type { LevelSpec } from './types';
+import { Scene } from './scene';
+import { createTextLayer } from './layers/text';
 
 export type GameContext = {
   readonly videoContext: CanvasRenderingContext2D;
@@ -36,6 +38,12 @@ async function main(videoContext: CanvasRenderingContext2D) {
   inputRouter.addReceiver(mario);
 
   async function runLevel(name: string) {
+    const loadScreen = new Scene();
+    loadScreen.addLayer(createColorLayer('#000'));
+    loadScreen.addLayer(createTextLayer(font, `Loading ${name}...`));
+    sceneRunner.addScene(loadScreen);
+    sceneRunner.runNext();
+
     const level = await loadLevel(name);
 
     level.events.listen(
@@ -61,7 +69,7 @@ async function main(videoContext: CanvasRenderingContext2D) {
     const playerEnv = createPlayerEnv(mario);
     level.addEntity(playerEnv);
 
-    const waitScreen = new CompositionScene();
+    const waitScreen = new TimedScene();
     waitScreen.addLayer(createColorLayer('#000'));
     waitScreen.addLayer(dashboardLayer);
     waitScreen.addLayer(playerProgressLayer);

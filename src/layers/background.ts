@@ -37,6 +37,6 @@ export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile
     const drawTo = drawFrom + drawWidth;
     redraw(drawFrom, drawTo);
 
-    context.drawImage(buffer, -x % 16, -y);
+    context.drawImage(buffer, Math.floor(-x % 16), Math.floor(-y));
   };
 }
