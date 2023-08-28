@@ -1,7 +1,10 @@
-import { type Entity, type Side, Trait } from '../entity';
+import type { Entity, Side } from '../entity';
+import { Trait } from '../trait';
+
+const PENDULUM_MOVE_SPEED = -30;
 
 export class PendulumMove extends Trait {
-  speed = -30;
+  speed = PENDULUM_MOVE_SPEED;
   enabled = true;
 
   obstruct(_entity: Entity, side: Side) {

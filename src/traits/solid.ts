@@ -1,5 +1,6 @@
-import { type Entity, type Side, Trait } from '../entity';
+import type { Entity, Side } from '../entity';
 import type { Match } from '../tile-resolver';
+import { Trait } from '../trait';
 
 export class Solid extends Trait {
   obstructs = true;

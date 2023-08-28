@@ -1,7 +1,8 @@
-import { Entity, Trait } from '../entity';
+import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders/sprite';
 import type { GameContext } from '../main';
 import type { SpriteSheet } from '../spritesheet';
+import { Trait } from '../trait';
 import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';
 
 type State = 'walking' | 'hiding' | 'panic';

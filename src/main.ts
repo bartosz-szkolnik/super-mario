@@ -9,10 +9,9 @@ import { createPlayerProgressLayer } from './layers/player-progress';
 import { Level } from './level';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
-import { createPlayer, createPlayerEnv } from './player';
+import { createPlayerEnv, findPlayers, makePlayer } from './player';
 import { SceneRunner } from './scene-runner';
 import { Timer } from './timer';
-import { Player } from './traits';
 import type { LevelSpec } from './types';
 import { Scene } from './scene';
 import { createTextLayer } from './layers/text';
@@ -31,8 +30,8 @@ async function main(videoContext: CanvasRenderingContext2D) {
   const loadLevel = createLevelLoader(entityFactory);
   const sceneRunner = new SceneRunner();
 
-  const mario = createPlayer(entityFactory.mario());
-  mario.get(Player).name = 'MARIO';
+  const mario = entityFactory.mario();
+  makePlayer(mario, 'MARIO');
 
   const inputRouter = setupKeyboard(window);
   inputRouter.addReceiver(mario);
@@ -50,11 +49,9 @@ async function main(videoContext: CanvasRenderingContext2D) {
       Level.EVENT_TRIGGER,
       (spec: LevelSpec['triggers'][0], _trigger: Entity, touches: Set<Entity>) => {
         if (spec.type === 'GOTO') {
-          for (const entity of touches) {
-            if (entity.has(Player)) {
-              runLevel(spec.name);
-              return;
-            }
+          for (const _entity of findPlayers(touches)) {
+            runLevel(spec.name);
+            return;
           }
         }
       },

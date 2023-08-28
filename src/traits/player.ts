@@ -1,5 +1,6 @@
 import { Stomper } from './stomper';
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
+import { Trait } from '../trait';
 
 const COIN_LIFE_THRESHOLD = 100;
 

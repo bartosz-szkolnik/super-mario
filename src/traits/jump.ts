@@ -1,5 +1,6 @@
-import { type Entity, Trait, type Side } from '../entity';
+import type { Entity, Side } from '../entity';
 import type { GameContext } from '../main';
+import { Trait } from '../trait';
 
 const ALLOWED_JUMP_DURATION = 0.3;
 const JUMP_VELOCITY = 200;

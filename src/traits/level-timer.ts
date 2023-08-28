@@ -1,6 +1,7 @@
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
 import type { Level } from '../level';
 import type { GameContext } from '../main';
+import { Trait } from '../trait';
 
 const TOTAL_TIME = 300;
 const HURRY_TIME = 100;

@@ -26,7 +26,7 @@ export function createPlayerProgressLayer(font: Font, level: Level): Layer {
 }
 
 function getPlayer(level: Level) {
-  for (const entity of findPlayers(level)) {
+  for (const entity of findPlayers(level.entities)) {
     return entity;
   }
 }

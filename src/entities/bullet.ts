@@ -1,8 +1,9 @@
-import { Entity, Trait } from '../entity';
+import { Entity } from '../entity';
 import { Level } from '../level';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { GameContext } from '../main';
 import type { SpriteSheet } from '../spritesheet';
+import { Trait } from '../trait';
 import { Gravity, Killable, Stomper, Velocity } from '../traits';
 
 export async function loadBullet() {

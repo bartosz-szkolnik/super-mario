@@ -1,6 +1,7 @@
-import { Entity, Trait } from '../entity';
+import { Entity } from '../entity';
 import { loadSpriteSheet } from '../loaders/sprite';
 import type { SpriteSheet } from '../spritesheet';
+import { Trait } from '../trait';
 import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';
 
 export async function loadGoomba() {

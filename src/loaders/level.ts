@@ -6,8 +6,7 @@ import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
-import { LevelTimer } from '../traits/level-timer';
-import { Trigger } from '../traits/trigger';
+import { LevelTimer, Trigger } from '../traits';
 import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
@@ -67,11 +66,14 @@ function setupTriggers(levelSpec: LevelSpec, level: Level) {
   }
 
   for (const triggerSpec of levelSpec.triggers) {
-    const entity = createTrigger();
-    entity.get(Trigger).addCondition((entity, touches, _gc, level) => {
+    const trigger = new Trigger();
+
+    trigger.addCondition((entity, touches, _gc, level) => {
       level.events.emit(Level.EVENT_TRIGGER, triggerSpec, entity, touches);
     });
 
+    const entity = new Entity();
+    entity.addTrait(trigger);
     entity.size.set(64, 64);
     entity.pos.set(...triggerSpec.pos);
     level.addEntity(entity);
@@ -155,13 +157,6 @@ function createTimer() {
   timer.addTrait(new LevelTimer());
 
   return timer;
-}
-
-function createTrigger() {
-  const entity = new Entity();
-  entity.addTrait(new Trigger());
-
-  return entity;
 }
 
 function setupBehavior(level: Level) {

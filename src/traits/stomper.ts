@@ -1,5 +1,6 @@
 import { Killable } from '.';
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
+import { Trait } from '../trait';
 
 const BOUNCE_SPEED = 400;
 

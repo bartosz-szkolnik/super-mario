@@ -1,8 +1,9 @@
 import type { Level } from '../level';
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
 import type { GameContext } from '../main';
 import { Vec2 } from '../math';
 import { Killable } from '../traits';
+import { Trait } from '../trait';
 
 export class PlayerController extends Trait {
   player: Entity | null = null;

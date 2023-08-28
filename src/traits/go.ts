@@ -1,6 +1,7 @@
 import { Jump } from './jump';
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
 import type { GameContext } from '../main';
+import { Trait } from '../trait';
 
 const ACCELERATION = 400;
 const DECELERATION = 300;

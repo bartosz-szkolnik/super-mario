@@ -1,13 +1,14 @@
-import { type Entity, Trait } from '../entity';
+import type { Entity } from '../entity';
 import type { Level } from '../level';
 import type { GameContext } from '../main';
+import { Trait } from '../trait';
 
-// const REMOVE_AFTER_TIME = 2;
+const REMOVE_AFTER_TIME = 2;
 
 export class Killable extends Trait {
   private deadTime = 0;
   dead = false;
-  removeAfter = 2;
+  removeAfter = REMOVE_AFTER_TIME;
 
   kill() {
     this.queue(() => (this.dead = true));
