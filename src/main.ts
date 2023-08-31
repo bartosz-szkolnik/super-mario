@@ -9,7 +9,7 @@ import { createPlayerProgressLayer } from './layers/player-progress';
 import { Level } from './level';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
-import { createPlayerEnv, findPlayers, makePlayer } from './player';
+import { findPlayers, makePlayer } from './player';
 import { SceneRunner } from './scene-runner';
 import { Timer } from './timer';
 import type { LevelSpec } from './types';
@@ -62,9 +62,6 @@ async function main(videoContext: CanvasRenderingContext2D) {
 
     mario.pos.set(0, 0);
     level.addEntity(mario);
-
-    const playerEnv = createPlayerEnv(mario);
-    level.addEntity(playerEnv);
 
     const waitScreen = new TimedScene();
     waitScreen.addLayer(createColorLayer('#000'));

@@ -10,8 +10,13 @@ export class KeyboardState {
   // Holds the callback functions for a key code
   private readonly keyMap = new Map<string, KeyFn>();
 
-  addMapping(code: string, callback: KeyFn) {
-    this.keyMap.set(code, callback);
+  addMapping(codes: string | string[], callback: KeyFn) {
+    if (Array.isArray(codes)) {
+      codes.forEach(code => this.keyMap.set(code, callback));
+      return;
+    }
+
+    this.keyMap.set(codes, callback);
   }
 
   listenTo(window: Window) {
