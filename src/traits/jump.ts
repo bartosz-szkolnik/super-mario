@@ -11,6 +11,7 @@ export class Jump extends Trait {
   private engageTime = 0;
   private requestTime = 0;
   ready = 0;
+  velocity = JUMP_VELOCITY;
 
   get falling() {
     return this.ready < 0;
@@ -45,7 +46,7 @@ export class Jump extends Trait {
     }
 
     if (this.engageTime > 0) {
-      entity.vel.y = -(JUMP_VELOCITY + Math.abs(entity.vel.x * SPEED_BOOST));
+      entity.vel.y = -(this.velocity + Math.abs(entity.vel.x * SPEED_BOOST));
       this.engageTime -= deltaTime ?? 0;
     }
 

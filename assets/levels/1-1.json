@@ -186,6 +186,14 @@
       "pos": [220, 0]
     },
     {
+      "name": "goomba",
+      "pos": [420, 0]
+    },
+    {
+      "name": "goomba",
+      "pos": [1020, 0]
+    },
+    {
       "name": "cannon",
       "pos": [96, 112]
     }

@@ -4,8 +4,10 @@ import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
+import { GameContext } from '../main';
 import { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
+import { Trait } from '../trait';
 import { LevelTimer, Trigger } from '../traits';
 import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
@@ -48,13 +50,44 @@ function setupBackgrounds(
   });
 }
 
+function createSpawner() {
+  class Spawner extends Trait {
+    private readonly entities: Entity[] = [];
+    private readonly offsetX = 64;
+
+    addEntity(entity: Entity) {
+      this.entities.push(entity);
+      this.entities.sort((a, b) => (a.pos.x < b.pos.x ? -1 : 1));
+    }
+
+    update(_entity: Entity, _gameContext: GameContext, level: Level) {
+      const { pos, size } = level.camera;
+      const cameraMaxX = pos.x + size.x + this.offsetX;
+      while (this.entities[0]) {
+        if (cameraMaxX > this.entities[0].pos.x) {
+          level.addEntity(this.entities.shift()!);
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
+  return new Spawner();
+}
+
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactory) {
+  const spawner = createSpawner();
   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
     const createEntity = entityFactory[name];
     const entity = createEntity();
     entity.pos.set(x, y);
-    level.addEntity(entity);
+    spawner.addEntity(entity);
   });
+
+  const entityProxy = new Entity();
+  entityProxy.addTrait(spawner);
+  level.entities.add(entityProxy);
 
   const spriteLayer = createSpriteLayer(level.entities);
   level.addLayer(spriteLayer);

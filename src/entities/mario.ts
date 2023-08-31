@@ -55,6 +55,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new Stomper());
 
     mario.get(Killable).removeAfter = 0;
+    mario.get(Jump).velocity = 175;
 
     mario.turbo = setTurboState;
     mario.draw = drawMario;
