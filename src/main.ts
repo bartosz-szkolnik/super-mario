@@ -1,5 +1,5 @@
 import { TimedScene } from './timed-scene';
-import { EntityFactory, loadEntities } from './entities';
+import { EntityFactories, loadEntities } from './entities';
 import type { Entity } from './entity';
 import { setupKeyboard } from './input';
 import { createCollisionLayer } from './layers/collision';
@@ -19,18 +19,18 @@ import { createTextLayer } from './layers/text';
 export type GameContext = {
   readonly videoContext: CanvasRenderingContext2D;
   readonly audioContext: AudioContext;
-  readonly entityFactory: EntityFactory;
+  readonly entityFactories: EntityFactories;
   deltaTime: number | null;
 };
 
 async function main(videoContext: CanvasRenderingContext2D) {
   const audioContext = new AudioContext();
-  const [entityFactory, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
+  const [entityFactories, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
 
-  const loadLevel = createLevelLoader(entityFactory);
+  const loadLevel = createLevelLoader(entityFactories);
   const sceneRunner = new SceneRunner();
 
-  const mario = entityFactory.mario();
+  const mario = entityFactories.mario();
   makePlayer(mario, 'MARIO');
 
   const inputRouter = setupKeyboard(window);
@@ -82,7 +82,7 @@ async function main(videoContext: CanvasRenderingContext2D) {
   const gameContext: GameContext = {
     videoContext,
     audioContext,
-    entityFactory,
+    entityFactories,
     deltaTime: null,
   };
 

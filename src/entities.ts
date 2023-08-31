@@ -1,23 +1,45 @@
+import { loadBrickShrapnel } from './entities/brick-shrapnel';
 import { loadBullet } from './entities/bullet';
 import { loadCannon } from './entities/cannon';
 import { loadGoombaBrown, loadGoombaBlue } from './entities/goomba';
 import { loadKoopaGreen, loadKoopaBlue } from './entities/koopa';
 import { loadMario } from './entities/mario';
+import type { Entity } from './entity';
 
 // fixme decide whether to use kebab-case or camelCase
 
-export type EntityFactory = {
-  mario: Awaited<ReturnType<typeof loadMario>>;
-  'goomba-brown': Awaited<ReturnType<typeof loadGoombaBrown>>;
-  'goomba-blue': Awaited<ReturnType<typeof loadGoombaBlue>>;
-  'koopa-green': Awaited<ReturnType<typeof loadKoopaGreen>>;
-  'koopa-blue': Awaited<ReturnType<typeof loadKoopaBlue>>;
-  goombaBrown: Awaited<ReturnType<typeof loadGoombaBrown>>;
-  goombaBlue: Awaited<ReturnType<typeof loadGoombaBlue>>;
-  koopaGreen: Awaited<ReturnType<typeof loadKoopaGreen>>;
-  koopaBlue: Awaited<ReturnType<typeof loadKoopaBlue>>;
-  bullet: Awaited<ReturnType<typeof loadBullet>>;
-  cannon: Awaited<ReturnType<typeof loadCannon>>;
+type EntityFactory = () => Entity;
+
+function createPool(size: number) {
+  const pool: Entity[] = [];
+
+  return function createPooledFactory(factory: EntityFactory) {
+    for (let i = 0; i < size; i++) {
+      pool.push(factory());
+    }
+
+    let count = 0;
+    return function pooledFactory() {
+      const entity = pool[count++ % pool.length];
+      entity.lifetime = 0;
+      return entity;
+    };
+  };
+}
+
+export type EntityFactories = {
+  mario: EntityFactory;
+  'goomba-brown': EntityFactory;
+  'goomba-blue': EntityFactory;
+  'koopa-green': EntityFactory;
+  'koopa-blue': EntityFactory;
+  goombaBrown: EntityFactory;
+  goombaBlue: EntityFactory;
+  koopaGreen: EntityFactory;
+  koopaBlue: EntityFactory;
+  bullet: EntityFactory;
+  cannon: EntityFactory;
+  brickShrapnel: EntityFactory;
 };
 
 export async function loadEntities(audioContext: AudioContext) {
@@ -29,6 +51,7 @@ export async function loadEntities(audioContext: AudioContext) {
     loadKoopaBlue(),
     loadBullet(),
     loadCannon(audioContext),
+    loadBrickShrapnel(audioContext).then(createPool(8)),
   ]).then(
     ([
       createMario,
@@ -38,8 +61,9 @@ export async function loadEntities(audioContext: AudioContext) {
       createKoopaBlue,
       createBullet,
       createCannon,
-    ]) => {
-      return {
+      createBrickShrapnel,
+    ]) =>
+      ({
         mario: createMario,
         'goomba-brown': createGoombaBrown,
         'goomba-blue': createGoombaBlue,
@@ -51,7 +75,7 @@ export async function loadEntities(audioContext: AudioContext) {
         koopaBlue: createKoopaBlue,
         bullet: createBullet,
         cannon: createCannon,
-      } satisfies EntityFactory;
-    },
+        brickShrapnel: createBrickShrapnel,
+      } satisfies EntityFactories),
   );
 }

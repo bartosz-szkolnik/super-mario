@@ -9,9 +9,9 @@ import type { SpriteSpec } from '../types';
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
 
 export async function loadMario(audioContext: AudioContext) {
-  return Promise.all([loadSpriteSheet('mario'), loadAudioBoard('mario', audioContext)]).then(([sprite, audio]) => {
-    return createMarioFactory(sprite, audio);
-  });
+  return Promise.all([loadSpriteSheet('mario'), loadAudioBoard('mario', audioContext)]).then(([sprite, audio]) =>
+    createMarioFactory(sprite, audio),
+  );
 }
 
 function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {

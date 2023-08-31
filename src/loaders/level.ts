@@ -1,4 +1,4 @@
-import type { EntityFactory } from '../entities';
+import type { EntityFactories } from '../entities';
 import { Entity } from '../entity';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
@@ -13,7 +13,7 @@ import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
-export function createLevelLoader(entityFactory: EntityFactory) {
+export function createLevelLoader(entityFactories: EntityFactories) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
 
@@ -28,7 +28,7 @@ export function createLevelLoader(entityFactory: EntityFactory) {
     level.music.setPlayer(musicPlayer);
 
     setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
-    setupEntities(levelSpec, level, entityFactory);
+    setupEntities(levelSpec, level, entityFactories);
     setupTriggers(levelSpec, level);
     setupBehavior(level);
 
@@ -76,10 +76,10 @@ function createSpawner() {
   return new Spawner();
 }
 
-function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactory) {
+function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: EntityFactories) {
   const spawner = createSpawner();
   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
-    const createEntity = entityFactory[name];
+    const createEntity = entityFactories[name];
     const entity = createEntity();
     entity.pos.set(x, y);
     spawner.addEntity(entity);

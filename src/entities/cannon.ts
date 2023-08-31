@@ -14,7 +14,7 @@ export async function loadCannon(audioContext: AudioContext) {
 }
 
 function createCannonFactory(audio: AudioBoard) {
-  function emitBullet(cannon: Entity, { entityFactory }: GameContext, level: Level) {
+  function emitBullet(cannon: Entity, { entityFactories }: GameContext, level: Level) {
     let dir = 1;
     for (const player of findPlayers(level.entities)) {
       if (player.pos.x > cannon.pos.x - HOLD_FIRE_THRESHOLD && player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD) {
@@ -26,7 +26,7 @@ function createCannonFactory(audio: AudioBoard) {
       }
     }
 
-    const bullet = entityFactory.bullet();
+    const bullet = entityFactories.bullet();
     bullet.pos.copy(cannon.pos);
     bullet.vel.set(80 * dir, 0);
 
