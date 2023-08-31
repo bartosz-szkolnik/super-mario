@@ -17,7 +17,7 @@ export function createPlayerProgressLayer(font: Font, level: Level): Layer {
     const player = getPlayer(level);
 
     font.print(`WORLD ${level.name}`, context, 12 * size, 12 * size);
-    font.print(`x${player?.get(Player).lives.toString().padStart(3, ' ')}`, context, 16 * size, 15.5 * size);
+    font.print(`×${player?.get(Player).lives.toString().padStart(3, ' ')}`, context, 16 * size, 15.5 * size);
 
     spriteBufferContext.clearRect(0, 0, spriteBuffer.width, spriteBuffer.height);
     player?.draw(spriteBufferContext);

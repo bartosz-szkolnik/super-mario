@@ -1,14 +1,14 @@
 import { loadImage } from '../loaders';
 import { SpriteSheet } from '../spritesheet';
 
-const CHARACTERS = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+const CHARACTERS = ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ©!-×.';
 const SIZE = 8;
 
 export class Font {
   constructor(private sprites: SpriteSheet, public size: number) {}
 
   print(text: string, context: CanvasRenderingContext2D, x: number, y: number) {
-    [...text].forEach((char, pos) => {
+    [...text.toUpperCase()].forEach((char, pos) => {
       this.sprites.draw(char, context, x + pos * this.size, y);
     });
   }
