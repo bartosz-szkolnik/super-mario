@@ -38,7 +38,7 @@ class Behavior extends Trait {
 
 function createBulletFactory(sprite: SpriteSheet) {
   function drawBullet(this: Entity, context: CanvasRenderingContext2D) {
-    sprite.draw('bullet', context, 0, 0, this.vel.x < 0);
+    sprite.draw('bullet', context, 0, 0, this.vel.x > 0);
   }
 
   return function createBullet() {
