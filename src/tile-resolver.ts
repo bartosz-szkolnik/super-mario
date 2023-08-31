@@ -17,7 +17,7 @@ export function toIndex(pos: number, tileSize = 16) {
 
 export class TileResolver {
   // fixme: change to private
-  constructor(private readonly matrix: Matrix<CollisionTile>, public readonly tileSize = 16) {}
+  constructor(public readonly matrix: Matrix<CollisionTile>, public readonly tileSize = 16) {}
 
   // fixme: should this be private?
   searchByPosition(posX: number, posY: number) {

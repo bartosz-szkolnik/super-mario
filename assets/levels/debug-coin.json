@@ -1,8 +1,8 @@
 {
-  "spriteSheet": "underworld",
+  "spriteSheet": "overworld",
   "musicSheet": "silent",
-
-  "patternSheet": "",
+  "patternSheet": "overworld-pattern",
+  "checkpoints": [[40, 192]],
 
   "layers": [
     {

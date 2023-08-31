@@ -48,6 +48,10 @@ export class Vec2 {
     this.y = vec2.y;
   }
 
+  equals(vec2: Vec2) {
+    return this.x === vec2.x && this.y === vec2.y;
+  }
+
   static isVec2(value: unknown): value is Vec2 {
     if (!value) {
       return false;
@@ -56,3 +60,22 @@ export class Vec2 {
     return typeof value === 'object' && Object.hasOwn(value, 'x') && Object.hasOwn(value, 'y');
   }
 }
+
+export function clamp(value: number, min: number, max: number) {
+  if (value > max) {
+    return max;
+  }
+
+  if (value < min) {
+    return min;
+  }
+
+  return value;
+}
+
+export const Direction = {
+  UP: new Vec2(0, -1),
+  DOWN: new Vec2(0, 1),
+  RIGHT: new Vec2(1, 0),
+  LEFT: new Vec2(-1, 0),
+};

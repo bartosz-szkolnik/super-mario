@@ -9,7 +9,7 @@ import { createPlayerProgressLayer } from './layers/player-progress';
 import { Level } from './level';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
-import { findPlayers, makePlayer } from './player';
+import { bootstrap, findPlayers, makePlayer } from './player';
 import { SceneRunner } from './scene-runner';
 import { Timer } from './timer';
 import type { LevelSpec } from './types';
@@ -21,6 +21,7 @@ export type GameContext = {
   readonly audioContext: AudioContext;
   readonly entityFactories: EntityFactories;
   deltaTime: number | null;
+  tick: number;
 };
 
 async function main(videoContext: CanvasRenderingContext2D) {
@@ -44,6 +45,7 @@ async function main(videoContext: CanvasRenderingContext2D) {
     sceneRunner.runNext();
 
     const level = await loadLevel(name);
+    bootstrap(mario, level);
 
     level.events.listen(
       Level.EVENT_TRIGGER,
@@ -59,9 +61,6 @@ async function main(videoContext: CanvasRenderingContext2D) {
 
     const playerProgressLayer = createPlayerProgressLayer(font, level);
     const dashboardLayer = createDashboardLayer(font, level);
-
-    mario.pos.set(0, 0);
-    level.addEntity(mario);
 
     const waitScreen = new TimedScene();
     waitScreen.addLayer(createColorLayer('#000'));
@@ -81,10 +80,12 @@ async function main(videoContext: CanvasRenderingContext2D) {
     audioContext,
     entityFactories,
     deltaTime: null,
+    tick: 0,
   };
 
   const timer = new Timer(1 / 60);
   timer.setUpdateFn(deltaTime => {
+    gameContext.tick++;
     gameContext.deltaTime = deltaTime;
     sceneRunner.update(gameContext);
   });

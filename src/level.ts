@@ -2,6 +2,7 @@ import { Camera } from './camera';
 import type { Entity } from './entity';
 import { EntityCollider } from './entity-collider';
 import type { GameContext } from './main';
+import { Vec2, clamp } from './math';
 import { MusicController } from './music-controller';
 import { findPlayers } from './player';
 import { Scene } from './scene';
@@ -24,6 +25,7 @@ export class Level extends Scene {
 
   readonly entities = new Set<Entity>();
   readonly gravity = GRAVITY;
+  readonly checkpoints: Vec2[] = [];
 
   readonly music = new MusicController();
   readonly camera = new Camera();
@@ -75,6 +77,6 @@ export class Level extends Scene {
 
 function focusPlayer(level: Level) {
   for (const player of findPlayers(level.entities)) {
-    level.camera.pos.x = Math.max(0, player.pos.x - 100);
+    level.camera.pos.x = clamp(player.pos.x - 100, level.camera.min.x, level.camera.max.x - level.camera.size.x);
   }
 }

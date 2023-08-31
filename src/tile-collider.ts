@@ -22,7 +22,8 @@ const handlers = {
 } as const;
 
 export class TileCollider {
-  private readonly resolvers: TileResolver[] = [];
+  // fixme: make private
+  readonly resolvers: TileResolver[] = [];
 
   addGrid(tileMatrix: Matrix<Tile>) {
     this.resolvers.push(new TileResolver(tileMatrix));

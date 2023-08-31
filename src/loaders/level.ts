@@ -5,7 +5,7 @@ import { createSpriteLayer } from '../layers/sprites';
 import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
 import { GameContext } from '../main';
-import { Matrix } from '../math';
+import { Matrix, Vec2 } from '../math';
 import type { SpriteSheet } from '../spritesheet';
 import { Trait } from '../trait';
 import { LevelTimer, Trigger } from '../traits';
@@ -30,7 +30,9 @@ export function createLevelLoader(entityFactories: EntityFactories) {
     setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
     setupEntities(levelSpec, level, entityFactories);
     setupTriggers(levelSpec, level);
+    setupCheckpoints(levelSpec, level);
     setupBehavior(level);
+    setupCamera(level);
 
     return level;
   };
@@ -80,6 +82,9 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: Enti
   const spawner = createSpawner();
   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
     const createEntity = entityFactories[name];
+    if (!createEntity) {
+      throw new Error(`No entity named ${name} found.`);
+    }
     const entity = createEntity();
     entity.pos.set(x, y);
     spawner.addEntity(entity);
@@ -121,6 +126,7 @@ function createGrid(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
     if (tile.type === 'PATTERN') {
       throw new Error('Found a pattern somewhere it should not be found.');
     }
+
     grid.set(x, y, { ...tile, type: tile.behavior });
   }
 
@@ -185,22 +191,37 @@ function* expandTiles(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
   yield* walkTiles(tiles, 0, 0);
 }
 
-function createTimer() {
-  const timer = new Entity();
-  timer.addTrait(new LevelTimer());
-
-  return timer;
-}
-
 function setupBehavior(level: Level) {
-  const timer = createTimer();
-  level.addEntity(timer);
-
   level.events.listen(LevelTimer.EVENT_TIMER_OK, () => {
     level.music.playTheme();
   });
   level.events.listen(LevelTimer.EVENT_TIMER_HURRY, () => {
     level.music.playHurryTheme();
+  });
+}
+
+function setupCamera(level: Level) {
+  let maxX = 0;
+  let maxTileSize = 0;
+
+  for (const resolver of level.tileCollider.resolvers) {
+    if (resolver.tileSize > maxTileSize) {
+      maxTileSize = resolver.tileSize;
+    }
+
+    resolver.matrix.forEach((_, x) => {
+      if (x > maxX) {
+        maxX = x;
+      }
+    });
+  }
+
+  level.camera.max.x = maxX * maxTileSize;
+}
+
+function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
+  levelSpec.checkpoints.forEach(([x, y]) => {
+    level.checkpoints.push(new Vec2(x, y));
   });
 }
 

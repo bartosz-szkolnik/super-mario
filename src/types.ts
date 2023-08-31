@@ -18,6 +18,7 @@ export type LevelSpec = {
   spriteSheet: string;
   musicSheet: string;
   patternSheet: string;
+  checkpoints: [number, number][];
   layers: { tiles: TilePatternSpec[] }[];
   entities: { name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue'; pos: [number, number] }[];
   triggers: {
