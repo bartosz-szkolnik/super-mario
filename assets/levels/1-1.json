@@ -178,20 +178,24 @@
 
   "entities": [
     {
-      "name": "koopa",
+      "name": "koopa-green",
       "pos": [260, 0]
     },
     {
-      "name": "goomba",
+      "name": "goomba-brown",
       "pos": [220, 0]
     },
     {
-      "name": "goomba",
+      "name": "goomba-brown",
       "pos": [420, 0]
     },
     {
-      "name": "goomba",
+      "name": "goomba-brown",
       "pos": [1020, 0]
+    },
+    {
+      "name": "koopa-green",
+      "pos": [620, 0]
     },
     {
       "name": "cannon",

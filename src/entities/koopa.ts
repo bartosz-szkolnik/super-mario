@@ -10,8 +10,13 @@ type State = 'walking' | 'hiding' | 'panic';
 const HIDE_DURATION = 5;
 const PANIC_SPEED = 300;
 
-export async function loadKoopa() {
-  const sprite = await loadSpriteSheet('koopa');
+export async function loadKoopaGreen() {
+  const sprite = await loadSpriteSheet('koopa-green');
+  return createKoopaFactory(sprite);
+}
+
+export async function loadKoopaBlue() {
+  const sprite = await loadSpriteSheet('koopa-blue');
   return createKoopaFactory(sprite);
 }
 

@@ -1,22 +1,21 @@
 {
   "imageUrl": "assets/sprites.png",
-
   "frames": [
     {
       "name": "walk-1",
-      "rect": [224, 0, 16, 24]
+      "rect": [224, 48, 16, 24]
     },
     {
       "name": "walk-2",
-      "rect": [240, 0, 16, 24]
+      "rect": [240, 48, 16, 24]
     },
     {
       "name": "hiding",
-      "rect": [208, 168, 16, 24]
+      "rect": [240, 168, 16, 24]
     },
     {
       "name": "hiding-with-legs",
-      "rect": [208, 192, 16, 24]
+      "rect": [240, 192, 16, 24]
     }
   ],
   "animations": [

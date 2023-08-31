@@ -4,8 +4,13 @@ import type { SpriteSheet } from '../spritesheet';
 import { Trait } from '../trait';
 import { Killable, PendulumMove, Stomper, Physics, Solid } from '../traits';
 
-export async function loadGoomba() {
-  const sprite = await loadSpriteSheet('goomba');
+export async function loadGoombaBrown() {
+  const sprite = await loadSpriteSheet('goomba-brown');
+  return createGoombaFactory(sprite);
+}
+
+export async function loadGoombaBlue() {
+  const sprite = await loadSpriteSheet('goomba-blue');
   return createGoombaFactory(sprite);
 }
 

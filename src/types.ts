@@ -19,7 +19,7 @@ export type LevelSpec = {
   musicSheet: string;
   patternSheet: string;
   layers: { tiles: TilePatternSpec[] }[];
-  entities: { name: 'goomba' | 'koopa'; pos: [number, number] }[];
+  entities: { name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue'; pos: [number, number] }[];
   triggers: {
     type: 'GOTO';
     name: string;
