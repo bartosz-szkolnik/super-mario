@@ -14,18 +14,42 @@ export type PatternSpec = {
 
 export type TilePatternSpec = TileSpec | PatternSpec;
 
+export type TriggerSpec = {
+  type: 'GOTO';
+  name: string;
+  pos: [number, number];
+};
+
+export type PipePortalPropsSpec = {
+  dir: 'DOWN' | 'UP' | 'LEFT' | 'RIGHT';
+  goesTo?: {
+    name: string;
+  };
+  backTo?: [number, number] | string;
+};
+
+export type EntitySpec =
+  | {
+      id?: string;
+      name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue';
+      pos: [number, number];
+      props?: Record<string, unknown>;
+    }
+  | {
+      id?: string;
+      name: 'pipe-portal';
+      pos: [number, number];
+      props: PipePortalPropsSpec;
+    };
+
 export type LevelSpec = {
   spriteSheet: string;
   musicSheet: string;
   patternSheet: string;
   checkpoints: [number, number][];
   layers: { tiles: TilePatternSpec[] }[];
-  entities: { name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue'; pos: [number, number] }[];
-  triggers: {
-    type: 'GOTO';
-    name: string;
-    pos: [number, number];
-  }[];
+  entities: EntitySpec[];
+  triggers: TriggerSpec[];
 };
 
 export type SpriteSpec = {

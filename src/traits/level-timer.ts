@@ -12,7 +12,7 @@ export class LevelTimer extends Trait {
   static readonly EVENT_TIMER_HURRY = Symbol('timer hurry');
   static readonly EVENT_TIMER_OK = Symbol('timer ok');
 
-  private hurryEmitted: boolean | null = null;
+  hurryEmitted: boolean | null = null;
   currentTime = TOTAL_TIME;
 
   reset() {

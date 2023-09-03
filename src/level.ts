@@ -18,12 +18,23 @@ export type BackgroundTile = {
 
 export type Tile = BackgroundTile & CollisionTile;
 
+export class EntityCollection extends Set<Entity> {
+  get(id?: string) {
+    for (const entity of this) {
+      if (entity.id === id) {
+        return entity;
+      }
+    }
+  }
+}
+
 const GRAVITY = 1500;
 
 export class Level extends Scene {
   static EVENT_TRIGGER = Symbol('trigger');
+  static EVENT_COMPLETE = Symbol('complete');
 
-  readonly entities = new Set<Entity>();
+  readonly entities = new EntityCollection();
   readonly gravity = GRAVITY;
   readonly checkpoints: Vec2[] = [];
 

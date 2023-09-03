@@ -4,11 +4,14 @@ import { loadCannon } from './entities/cannon';
 import { loadGoombaBrown, loadGoombaBlue } from './entities/goomba';
 import { loadKoopaGreen, loadKoopaBlue } from './entities/koopa';
 import { loadMario } from './entities/mario';
-import type { Entity } from './entity';
+import { loadPipePortal } from './entities/pipe-portal';
+import type { Entity, EntityProps } from './entity';
+import { PipePortalPropsSpec } from './types';
 
 // fixme decide whether to use kebab-case or camelCase
 
-type EntityFactory = () => Entity;
+type EntityFactory = (props?: EntityProps) => Entity;
+type PipePortalFactory = (props: PipePortalPropsSpec) => Entity;
 
 function createPool(size: number) {
   const pool: Entity[] = [];
@@ -40,6 +43,8 @@ export type EntityFactories = {
   bullet: EntityFactory;
   cannon: EntityFactory;
   brickShrapnel: EntityFactory;
+  pipePortal: PipePortalFactory;
+  'pipe-portal': PipePortalFactory;
 };
 
 export async function loadEntities(audioContext: AudioContext) {
@@ -52,6 +57,7 @@ export async function loadEntities(audioContext: AudioContext) {
     loadBullet(),
     loadCannon(audioContext),
     loadBrickShrapnel(audioContext).then(createPool(8)),
+    loadPipePortal(audioContext),
   ]).then(
     ([
       createMario,
@@ -62,6 +68,7 @@ export async function loadEntities(audioContext: AudioContext) {
       createBullet,
       createCannon,
       createBrickShrapnel,
+      createPipePortal,
     ]) =>
       ({
         mario: createMario,
@@ -76,6 +83,8 @@ export async function loadEntities(audioContext: AudioContext) {
         bullet: createBullet,
         cannon: createCannon,
         brickShrapnel: createBrickShrapnel,
+        pipePortal: createPipePortal,
+        'pipe-portal': createPipePortal,
       } satisfies EntityFactories),
   );
 }

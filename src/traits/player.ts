@@ -6,6 +6,8 @@ const COIN_LIFE_THRESHOLD = 100;
 
 export class Player extends Trait {
   name = 'UNNAMED';
+  world = 'UNKNOWN';
+
   lives = 3;
   score = 0;
   coins = 0;

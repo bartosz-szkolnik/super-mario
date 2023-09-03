@@ -14,4 +14,8 @@ export class Compositor {
       layer(context, camera ?? new Camera());
     });
   }
+
+  getLayers() {
+    return this.layers;
+  }
 }

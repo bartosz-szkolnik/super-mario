@@ -8,6 +8,29 @@ import type { Match } from './tile-resolver';
 import { Trait, type TraitCtor } from './trait';
 
 export type Side = 'bottom' | 'top' | 'right' | 'left';
+export type EntityProps = Record<string, unknown>;
+
+export const Align = {
+  center(target: Entity, subject: Entity) {
+    subject.bounds.setCenter(target.bounds.getCenter());
+  },
+
+  bottom(target: Entity, subject: Entity) {
+    subject.bounds.bottom = target.bounds.bottom;
+  },
+
+  top(target: Entity, subject: Entity) {
+    subject.bounds.top = target.bounds.top;
+  },
+
+  left(target: Entity, subject: Entity) {
+    subject.bounds.left = target.bounds.left;
+  },
+
+  right(target: Entity, subject: Entity) {
+    subject.bounds.right = target.bounds.right;
+  },
+};
 
 export class Entity {
   private readonly traits = new Map<TraitCtor, Trait>();
@@ -22,8 +45,10 @@ export class Entity {
 
   readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
 
+  id: string | null = null;
   lifetime = 0;
   audio: AudioBoard | null = null;
+  props: EntityProps = {};
 
   addTrait(trait: Trait) {
     this.traits.set(trait.constructor as TraitCtor, trait);

@@ -1,6 +1,6 @@
 import { InputRouter } from './input-router';
 import { KeyboardState } from './keyboard-state';
-import { Go, Jump } from './traits';
+import { Go, Jump, PipeTraveller } from './traits';
 
 const KEY_MAP = {
   UP: 'ArrowUp',
@@ -38,12 +38,30 @@ export function setupKeyboard(window: Window) {
     router.route(entity => entity.turbo(Boolean(keyState)));
   });
 
+  input.addMapping([KEY_MAP.UP, ALTERNATIVE_KEY_MAP.UP], keyState => {
+    router.route(entity => {
+      entity.get(PipeTraveller).direction.y += keyState ? -1 : 1;
+    });
+  });
+
+  input.addMapping([KEY_MAP.DOWN, ALTERNATIVE_KEY_MAP.DOWN], keyState => {
+    router.route(entity => {
+      entity.get(PipeTraveller).direction.y += keyState ? 1 : -1;
+    });
+  });
+
   input.addMapping([KEY_MAP.RIGHT, ALTERNATIVE_KEY_MAP.RIGHT], keyState => {
-    router.route(entity => (entity.get(Go).dir += keyState ? 1 : -1));
+    router.route(entity => {
+      entity.get(Go).dir += keyState ? 1 : -1;
+      entity.get(PipeTraveller).direction.x += keyState ? 1 : -1;
+    });
   });
 
   input.addMapping([KEY_MAP.LEFT, ALTERNATIVE_KEY_MAP.LEFT], keyState => {
-    router.route(entity => (entity.get(Go).dir += keyState ? -1 : 1));
+    router.route(entity => {
+      entity.get(Go).dir += keyState ? -1 : 1;
+      entity.get(PipeTraveller).direction.x += keyState ? -1 : 1;
+    });
   });
 
   return router;

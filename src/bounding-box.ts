@@ -1,7 +1,16 @@
-import type { Vec2 } from './math';
+import { Vec2 } from './math';
 
 export class BoundingBox {
   constructor(private readonly pos: Vec2, private readonly size: Vec2, private readonly offset: Vec2) {}
+
+  getCenter() {
+    return new Vec2(this.pos.x + this.size.x / 2, this.pos.y + this.size.y / 2);
+  }
+
+  setCenter(vec2: Vec2) {
+    this.pos.x = vec2.x - this.size.x / 2;
+    this.pos.y = vec2.y - this.size.y / 2;
+  }
 
   get bottom() {
     return this.pos.y + this.size.y + this.offset.y;

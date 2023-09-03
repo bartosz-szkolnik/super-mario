@@ -5,6 +5,7 @@ import { loadAudioBoard } from '../loaders/audio';
 import type { SpriteSheet } from '../spritesheet';
 import { Killable, Stomper, Physics, Solid, Jump, Go } from '../traits';
 import type { SpriteSpec } from '../types';
+import { PipeTraveller } from '../traits/pipe-traveller';
 
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
 
@@ -18,6 +19,15 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   const runAnimation = sprite.getAnimation('run');
 
   function routeFrame(mario: Entity): MarioFrame {
+    const pipeTraveller = mario.get(PipeTraveller);
+    if (pipeTraveller.movement.x != 0) {
+      return runAnimation(pipeTraveller.distance.x * 2) as MarioFrame;
+    }
+
+    if (pipeTraveller.movement.y != 0) {
+      return 'idle';
+    }
+
     if (mario.get(Jump).falling) {
       return 'jump';
     }
@@ -53,6 +63,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new Jump());
     mario.addTrait(new Killable());
     mario.addTrait(new Stomper());
+    mario.addTrait(new PipeTraveller());
 
     mario.get(Killable).removeAfter = Infinity;
     mario.get(Jump).velocity = 175;

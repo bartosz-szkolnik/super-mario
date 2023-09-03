@@ -6,10 +6,9 @@ import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
 import { GameContext } from '../main';
 import { Matrix, Vec2 } from '../math';
-import type { SpriteSheet } from '../spritesheet';
 import { Trait } from '../trait';
 import { LevelTimer, Trigger } from '../traits';
-import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
+import type { LevelSpec, PatternSheetSpec, PipePortalPropsSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
@@ -27,27 +26,31 @@ export function createLevelLoader(entityFactories: EntityFactories) {
     level.name = name;
     level.music.setPlayer(musicPlayer);
 
-    setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
+    setupBackgrounds(levelSpec, level, patterns);
     setupEntities(levelSpec, level, entityFactories);
     setupTriggers(levelSpec, level);
     setupCheckpoints(levelSpec, level);
+
     setupBehavior(level);
     setupCamera(level);
+
+    for (const resolver of level.tileCollider.resolvers) {
+      const backgroundLayer = createBackgroundLayer(level, resolver.matrix as Matrix<Tile>, backgroundSprites);
+      level.addLayer(backgroundLayer);
+    }
+
+    const spriteLayer = createSpriteLayer(level.entities);
+    const layers = level.getCompositor().getLayers();
+    layers.splice(layers.length - 1, 0, spriteLayer);
 
     return level;
   };
 }
 
-function setupBackgrounds(
-  levelSpec: LevelSpec,
-  level: Level,
-  backgroundSprites: SpriteSheet,
-  patterns: PatternSheetSpec,
-) {
+function setupBackgrounds(levelSpec: LevelSpec, level: Level, patterns: PatternSheetSpec) {
   levelSpec.layers.forEach(layer => {
     const grid = createGrid(layer.tiles, patterns);
-    const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
-    level.addLayer(backgroundLayer);
+
     level.tileCollider.addGrid(grid);
   });
 }
@@ -80,14 +83,22 @@ function createSpawner() {
 
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: EntityFactories) {
   const spawner = createSpawner();
-  levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
+  levelSpec.entities.forEach(({ name, pos: [x, y], props, id }) => {
     const createEntity = entityFactories[name];
     if (!createEntity) {
       throw new Error(`No entity named ${name} found.`);
     }
-    const entity = createEntity();
+
+    // fixme
+    const entity = createEntity(props as PipePortalPropsSpec);
     entity.pos.set(x, y);
-    spawner.addEntity(entity);
+
+    if (id) {
+      entity.id = id;
+      level.addEntity(entity);
+    } else {
+      spawner.addEntity(entity);
+    }
   });
 
   const entityProxy = new Entity();
@@ -216,10 +227,15 @@ function setupCamera(level: Level) {
     });
   }
 
-  level.camera.max.x = maxX * maxTileSize;
+  level.camera.max.x = (maxX + 1) * maxTileSize;
 }
 
 function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
+  if (!levelSpec.checkpoints) {
+    level.checkpoints.push(new Vec2(0, 0));
+    return;
+  }
+
   levelSpec.checkpoints.forEach(([x, y]) => {
     level.checkpoints.push(new Vec2(x, y));
   });

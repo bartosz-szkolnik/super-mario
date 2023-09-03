@@ -6,6 +6,8 @@ export * from './killable';
 export * from './level-timer';
 export * from './pendulum-move';
 export * from './physics';
+export * from './pipe-traveller';
+export * from './pipe';
 export * from './player';
 export * from './solid';
 export * from './stomper';

@@ -21,4 +21,8 @@ export class Scene {
   }
 
   update(_gameContext: GameContext) {}
+
+  getCompositor() {
+    return this.compositor;
+  }
 }
