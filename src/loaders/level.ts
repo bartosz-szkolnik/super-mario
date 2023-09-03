@@ -1,4 +1,5 @@
 import type { EntityFactories } from '../entities';
+import { isPipePortalEntitySpec } from '../entities/pipe-portal';
 import { Entity } from '../entity';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
@@ -8,7 +9,7 @@ import { GameContext } from '../main';
 import { Matrix, Vec2 } from '../math';
 import { Trait } from '../trait';
 import { LevelTimer, Trigger } from '../traits';
-import type { LevelSpec, PatternSheetSpec, PipePortalPropsSpec, TilePatternSpec } from '../types';
+import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
@@ -16,10 +17,11 @@ export function createLevelLoader(entityFactories: EntityFactories) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`assets/levels/${name}.json`);
 
+    const { spriteSheet, musicSheet, patternSheet } = levelSpec;
     const [backgroundSprites, musicPlayer, patterns] = await Promise.all([
-      loadSpriteSheet(levelSpec.spriteSheet),
-      loadMusicSheet(levelSpec.musicSheet),
-      loadPatterns(levelSpec.patternSheet),
+      loadSpriteSheet(spriteSheet),
+      loadMusicSheet(musicSheet),
+      loadPatterns(patternSheet),
     ]);
 
     const level = new Level();
@@ -35,7 +37,7 @@ export function createLevelLoader(entityFactories: EntityFactories) {
     setupCamera(level);
 
     for (const resolver of level.tileCollider.resolvers) {
-      const backgroundLayer = createBackgroundLayer(level, resolver.matrix as Matrix<Tile>, backgroundSprites);
+      const backgroundLayer = createBackgroundLayer(level, resolver.matrix, backgroundSprites);
       level.addLayer(backgroundLayer);
     }
 
@@ -50,7 +52,6 @@ export function createLevelLoader(entityFactories: EntityFactories) {
 function setupBackgrounds(levelSpec: LevelSpec, level: Level, patterns: PatternSheetSpec) {
   levelSpec.layers.forEach(layer => {
     const grid = createGrid(layer.tiles, patterns);
-
     level.tileCollider.addGrid(grid);
   });
 }
@@ -83,30 +84,37 @@ function createSpawner() {
 
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: EntityFactories) {
   const spawner = createSpawner();
-  levelSpec.entities.forEach(({ name, pos: [x, y], props, id }) => {
+
+  levelSpec.entities.forEach(entitySpec => {
+    if (isPipePortalEntitySpec(entitySpec)) {
+      // prettier-ignore
+      const { name, pos: [x, y] } = entitySpec;
+
+      const createEntity = entityFactories[name];
+      const entity = createEntity(entitySpec.props);
+      entity.pos.set(x, y);
+
+      entity.id = entitySpec.id ?? null;
+      level.addEntity(entity);
+      return;
+    }
+
+    // prettier-ignore
+    const { name, pos: [x, y] } = entitySpec;
+
     const createEntity = entityFactories[name];
     if (!createEntity) {
       throw new Error(`No entity named ${name} found.`);
     }
 
-    // fixme
-    const entity = createEntity(props as PipePortalPropsSpec);
+    const entity = createEntity();
     entity.pos.set(x, y);
-
-    if (id) {
-      entity.id = id;
-      level.addEntity(entity);
-    } else {
-      spawner.addEntity(entity);
-    }
+    spawner.addEntity(entity);
   });
 
   const entityProxy = new Entity();
   entityProxy.addTrait(spawner);
   level.entities.add(entityProxy);
-
-  const spriteLayer = createSpriteLayer(level.entities);
-  level.addLayer(spriteLayer);
 }
 
 function setupTriggers(levelSpec: LevelSpec, level: Level) {
@@ -133,12 +141,11 @@ function createGrid(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
   const grid = new Matrix<Tile>();
 
   for (const { tile, x, y } of expandTiles(tiles, patterns)) {
-    // fixme: remove later
     if (tile.type === 'PATTERN') {
       throw new Error('Found a pattern somewhere it should not be found.');
     }
 
-    grid.set(x, y, { ...tile, type: tile.behavior });
+    grid.set(x, y, { ...tile, behavior: tile.behavior });
   }
 
   return grid;
@@ -181,7 +188,6 @@ function* expandRanges(ranges: TilePatternSpec['ranges']) {
 }
 
 type ExpandedTiles = { tile: TilePatternSpec; x: number; y: number };
-
 function* expandTiles(tiles: TilePatternSpec[], patterns: PatternSheetSpec) {
   function* walkTiles(tiles: TilePatternSpec[], offsetX: number, offsetY: number): Generator<ExpandedTiles> {
     for (const tile of tiles) {

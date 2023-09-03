@@ -56,7 +56,7 @@ function handleY({ entity, match, gameContext, level, resolver }: TileCollisionC
     }
   } else if (vel.y < 0) {
     if (entity.has(Player)) {
-      const grid = resolver['matrix'];
+      const grid = resolver.matrix;
       grid.delete(match.indexX, match.indexY);
       addShrapnel(level, gameContext, match);
     }

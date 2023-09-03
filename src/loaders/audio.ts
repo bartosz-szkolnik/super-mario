@@ -16,7 +16,7 @@ export async function loadAudioBoard(name: string, context: AudioContext) {
   return Promise.all(jobs).then(() => audioBoard);
 }
 
-export function createAudioLoader(context: AudioContext) {
+function createAudioLoader(context: AudioContext) {
   return async function loadAudio(url: string) {
     const response = await fetch(url);
     const buffer = await response.arrayBuffer();

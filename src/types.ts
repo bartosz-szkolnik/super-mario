@@ -1,14 +1,13 @@
 export type TileSpec = {
   type: 'TILE';
   name: string;
-  behavior?: string;
+  behavior?: 'ground' | 'brick' | 'coin';
   ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
 };
 
 export type PatternSpec = {
   type: 'PATTERN';
   pattern: string;
-  behavior?: string;
   ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
 };
 
@@ -25,22 +24,20 @@ export type PipePortalPropsSpec = {
   goesTo?: {
     name: string;
   };
-  backTo?: [number, number] | string;
+  backTo?: string;
 };
 
-export type EntitySpec =
-  | {
-      id?: string;
-      name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue';
-      pos: [number, number];
-      props?: Record<string, unknown>;
-    }
-  | {
-      id?: string;
-      name: 'pipe-portal';
-      pos: [number, number];
-      props: PipePortalPropsSpec;
-    };
+export type EntitySpec = {
+  name: 'goomba-brown' | 'goomba-blue' | 'koopa-green' | 'koopa-blue';
+  pos: [number, number];
+};
+
+export type PipePortalEntitySpec = {
+  id?: string;
+  name: 'pipe-portal';
+  pos: [number, number];
+  props: PipePortalPropsSpec;
+};
 
 export type LevelSpec = {
   spriteSheet: string;
@@ -48,7 +45,7 @@ export type LevelSpec = {
   patternSheet: string;
   checkpoints: [number, number][];
   layers: { tiles: TilePatternSpec[] }[];
-  entities: EntitySpec[];
+  entities: (EntitySpec | PipePortalEntitySpec)[];
   triggers: TriggerSpec[];
 };
 
@@ -61,7 +58,7 @@ export type SpriteSpec = {
     index: [number, number];
   }[];
   frames?: {
-    name: 'idle' | 'run-1' | 'run-2' | 'run-3' | 'break' | 'jump';
+    name: 'idle' | 'run-1' | 'run-2' | 'run-3' | 'break' | 'jump' | 'climb';
     rect: [number, number, number, number];
   }[];
   animations?: {

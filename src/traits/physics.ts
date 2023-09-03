@@ -5,11 +5,6 @@ import { Trait } from '../trait';
 
 export class Physics extends Trait {
   update(entity: Entity, gameContext: GameContext, level: Level) {
-    // fixme: delete later
-    if (!level.tileCollider) {
-      throw new Error('Tile collider not found.');
-    }
-
     const { deltaTime } = gameContext;
     entity.pos.x += entity.vel.x * (deltaTime ?? 0);
     level.tileCollider.checkX(entity, gameContext, level);

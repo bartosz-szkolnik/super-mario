@@ -12,17 +12,15 @@ export class Scene {
     this.compositor.draw(videoContext);
   }
 
-  pause() {
-    console.log('Pause', this);
-  }
+  pause() {}
 
   addLayer(layer: Layer) {
     this.compositor.addLayer(layer);
   }
 
-  update(_gameContext: GameContext) {}
-
   getCompositor() {
     return this.compositor;
   }
+
+  update(_gameContext: GameContext) {}
 }

@@ -1,5 +1,4 @@
-import { EventName } from './event-buffer';
-
+export type EventName = symbol | string;
 export type Fn = (...args: any[]) => void;
 export type Listener = { name: EventName; callback: Fn };
 

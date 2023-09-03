@@ -10,6 +10,7 @@ const SPEED_BOOST = 0.3;
 export class Jump extends Trait {
   private engageTime = 0;
   private requestTime = 0;
+
   ready = 0;
   velocity = JUMP_VELOCITY;
 
@@ -46,7 +47,7 @@ export class Jump extends Trait {
     }
 
     if (this.engageTime > 0) {
-      entity.vel.y = -(this.velocity + Math.abs(entity.vel.x * SPEED_BOOST));
+      entity.vel.y = -(this.velocity + Math.abs(entity.vel.x) * SPEED_BOOST);
       this.engageTime -= deltaTime ?? 0;
     }
 

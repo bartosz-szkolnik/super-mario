@@ -22,14 +22,12 @@ const handlers = {
 } as const;
 
 export class TileCollider {
-  // fixme: make private
   readonly resolvers: TileResolver[] = [];
 
   addGrid(tileMatrix: Matrix<Tile>) {
     this.resolvers.push(new TileResolver(tileMatrix));
   }
 
-  // fixme: make private
   checkX(entity: Entity, gameContext: GameContext, level: Level) {
     const { vel, bounds } = entity;
     let x = 0;
@@ -49,7 +47,6 @@ export class TileCollider {
     }
   }
 
-  // fixme: make private
   checkY(entity: Entity, gameContext: GameContext, level: Level) {
     const { vel, bounds } = entity;
     let y = 0;
@@ -78,9 +75,12 @@ export class TileCollider {
       resolver,
     } satisfies TileCollisionContext;
 
-    const handlerGroup = handlers[match.tile.type! as keyof typeof handlers];
-    if (handlerGroup) {
-      handlerGroup[index](context);
+    const behavior = match.tile.behavior;
+    if (!behavior || !handlers[behavior]) {
+      return;
     }
+
+    const handlerGroup = handlers[behavior];
+    handlerGroup[index](context);
   }
 }

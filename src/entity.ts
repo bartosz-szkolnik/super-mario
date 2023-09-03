@@ -34,20 +34,19 @@ export const Align = {
 
 export class Entity {
   private readonly traits = new Map<TraitCtor, Trait>();
-  readonly sounds = new Set<string>();
+  private audio: AudioBoard | null = null;
 
   readonly events = new EventBuffer();
+  readonly sounds = new Set<string>();
 
   readonly pos = new Vec2(0, 0);
   readonly vel = new Vec2(0, 0);
   readonly size = new Vec2(0, 0);
   readonly offset = new Vec2(0, 0);
-
   readonly bounds = new BoundingBox(this.pos, this.size, this.offset);
 
-  id: string | null = null;
   lifetime = 0;
-  audio: AudioBoard | null = null;
+  id: string | null = null;
   props: EntityProps = {};
 
   addTrait(trait: Trait) {
@@ -104,6 +103,10 @@ export class Entity {
     });
 
     this.sounds.clear();
+  }
+
+  setAudio(audio: AudioBoard) {
+    this.audio = audio;
   }
 
   draw(_context: CanvasRenderingContext2D) {}

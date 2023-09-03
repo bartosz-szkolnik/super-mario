@@ -48,7 +48,6 @@ function createGoombaFactory(sprite: SpriteSheet) {
 
   return function createGoomba() {
     const goomba = new Entity();
-
     goomba.size.set(16, 16);
 
     goomba.addTrait(new Physics());

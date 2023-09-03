@@ -4,7 +4,7 @@ import { LevelTimer, Player } from './traits';
 
 export function makePlayer(entity: Entity, name: string) {
   const player = new Player();
-  player.name = name;
+  player.name = name ?? 'MARIO';
   entity.addTrait(player);
 
   const timer = new LevelTimer();

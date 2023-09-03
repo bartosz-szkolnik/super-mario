@@ -1,11 +1,11 @@
 import type { Camera } from '../camera';
 import type { Layer } from '../compositor';
-import type { BackgroundTile, Level } from '../level';
+import type { Tile, Level } from '../level';
 import type { Matrix } from '../math';
 import type { SpriteSheet } from '../spritesheet';
 import { toIndex } from '../tile-resolver';
 
-export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile>, sprites: SpriteSheet): Layer {
+export function createBackgroundLayer(level: Level, tiles: Matrix<Tile>, sprites: SpriteSheet): Layer {
   const buffer = document.createElement('canvas');
   buffer.width = 256 + 16;
   buffer.height = 240;
@@ -13,9 +13,10 @@ export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile
 
   function redraw(startIndex: number, endIndex: number) {
     context.clearRect(0, 0, buffer.width, buffer.height);
+    const grid = tiles.getGrid();
 
     for (let x = startIndex; x <= endIndex; ++x) {
-      const col = tiles.grid[x];
+      const col = grid[x];
       if (col) {
         col.forEach((tile, y) => {
           if (sprites.hasAnimation(tile.name)) {

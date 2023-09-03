@@ -8,25 +8,10 @@ import { findPlayers } from './player';
 import { Scene } from './scene';
 import { TileCollider } from './tile-collider';
 
-export type CollisionTile = {
-  type?: string;
-};
-
-export type BackgroundTile = {
+export type Tile = {
   name: string;
+  behavior?: 'ground' | 'brick' | 'coin';
 };
-
-export type Tile = BackgroundTile & CollisionTile;
-
-export class EntityCollection extends Set<Entity> {
-  get(id?: string) {
-    for (const entity of this) {
-      if (entity.id === id) {
-        return entity;
-      }
-    }
-  }
-}
 
 const GRAVITY = 1500;
 
@@ -83,6 +68,16 @@ export class Level extends Scene {
 
   pause() {
     this.music.pause();
+  }
+}
+
+class EntityCollection extends Set<Entity> {
+  get(id?: string) {
+    for (const entity of this) {
+      if (entity.id === id) {
+        return entity;
+      }
+    }
   }
 }
 

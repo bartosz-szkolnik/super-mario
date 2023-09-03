@@ -10,6 +10,7 @@ export class MusicController {
   playTheme(speed = 1) {
     const audio = this.player?.playTrack('main');
     if (!audio) {
+      console.warn('Not found the main theme of the level.');
       return;
     }
 
@@ -19,6 +20,7 @@ export class MusicController {
   playHurryTheme() {
     const audio = this.player?.playTrack('hurry');
     if (!audio) {
+      console.warn('Not found the hurry theme of the level.');
       return;
     }
 

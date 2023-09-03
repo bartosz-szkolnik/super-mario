@@ -1,6 +1,5 @@
 export class Matrix<T = unknown> {
-  // fixme make me private again
-  readonly grid: Array<Array<T>> = [];
+  private readonly grid: Array<Array<T>> = [];
 
   forEach(fn: (tile: T, x: number, y: number) => void) {
     this.grid.forEach((column, x) => {
@@ -33,6 +32,10 @@ export class Matrix<T = unknown> {
       delete col[y];
     }
   }
+
+  getGrid() {
+    return this.grid;
+  }
 }
 
 export class Vec2 {
@@ -50,6 +53,13 @@ export class Vec2 {
 
   equals(vec2: Vec2) {
     return this.x === vec2.x && this.y === vec2.y;
+  }
+
+  distance(vec2: Vec2) {
+    const dx = this.x - vec2.x;
+    const dy = this.y - vec2.y;
+
+    return Math.sqrt(dx * dx + dy * dy);
   }
 
   static isVec2(value: unknown): value is Vec2 {

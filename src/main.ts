@@ -76,41 +76,44 @@ async function main(videoContext: CanvasRenderingContext2D) {
           nextLevel.events.listen(Level.EVENT_COMPLETE, async () => {
             const level = await setupLevel(name);
 
-            if (typeof props.backTo === 'string') {
-              const exitPipe = level.entities.get(props.backTo)!;
-              connectEntity(exitPipe, mario);
-            }
+            const exitPipe = level.entities.get(props.backTo)!;
+            connectEntity(exitPipe, mario);
 
             sceneRunner.addScene(level);
             sceneRunner.runNext();
           });
-        } else {
-          level.events.emit(Level.EVENT_COMPLETE);
         }
+      } else {
+        level.events.emit(Level.EVENT_COMPLETE);
       }
     });
 
+    level.addLayer(createCollisionLayer(level));
     const dashboardLayer = createDashboardLayer(font, mario);
     level.addLayer(dashboardLayer);
-    level.addLayer(createCollisionLayer(level));
 
     return level;
+  }
+
+  function createWaitScreen(level: Level) {
+    const waitScreen = new TimedScene();
+    // waitScreen.countDown = 0;
+
+    const playerProgressLayer = createPlayerProgressLayer(font, level);
+    const dashboardLayer = createDashboardLayer(font, mario);
+
+    waitScreen.addLayer(createColorLayer('#000'));
+    waitScreen.addLayer(dashboardLayer);
+    waitScreen.addLayer(playerProgressLayer);
+
+    return waitScreen;
   }
 
   async function startWorld(name: string) {
     const level = await setupLevel(name);
     resetPlayer(mario, name);
 
-    const playerProgressLayer = createPlayerProgressLayer(font, level);
-    const dashboardLayer = createDashboardLayer(font, mario);
-
-    const waitScreen = new TimedScene();
-    // waitScreen.countDown = 0;
-
-    waitScreen.addLayer(createColorLayer('#000'));
-    waitScreen.addLayer(dashboardLayer);
-    waitScreen.addLayer(playerProgressLayer);
-
+    const waitScreen = createWaitScreen(level);
     sceneRunner.addScene(waitScreen);
     sceneRunner.addScene(level);
     sceneRunner.runNext();

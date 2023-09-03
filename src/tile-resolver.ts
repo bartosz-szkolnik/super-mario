@@ -1,8 +1,8 @@
-import type { CollisionTile } from './level';
+import type { Tile } from './level';
 import type { Matrix } from './math';
 
 export type Match = {
-  tile: CollisionTile;
+  tile: Tile;
   x1: number;
   x2: number;
   y1: number;
@@ -16,13 +16,7 @@ export function toIndex(pos: number, tileSize = 16) {
 }
 
 export class TileResolver {
-  // fixme: change to private
-  constructor(public readonly matrix: Matrix<CollisionTile>, public readonly tileSize = 16) {}
-
-  // fixme: should this be private?
-  searchByPosition(posX: number, posY: number) {
-    return this.getByIndex(this.toIndex(posX), this.toIndex(posY));
-  }
+  constructor(public readonly matrix: Matrix<Tile>, public readonly tileSize = 16) {}
 
   searchByRange(x1: number, x2: number, y1: number, y2: number) {
     const matches: Match[] = [];
@@ -36,6 +30,20 @@ export class TileResolver {
     });
 
     return matches;
+  }
+
+  getByIndex(indexX: number, indexY: number): Match | undefined {
+    const { tileSize, matrix } = this;
+    const tile = matrix.get(indexX, indexY);
+
+    if (tile) {
+      const x1 = indexX * tileSize;
+      const x2 = x1 + tileSize;
+      const y1 = indexY * tileSize;
+      const y2 = y1 + tileSize;
+
+      return { tile, x1, x2, y1, y2, indexX, indexY };
+    }
   }
 
   private toIndexRange(pos1: number, pos2: number) {
@@ -56,18 +64,8 @@ export class TileResolver {
     return toIndex(pos, this.tileSize);
   }
 
-  // fixme change to private
-  getByIndex(indexX: number, indexY: number): Match | undefined {
-    const { tileSize, matrix } = this;
-    const tile = matrix.get(indexX, indexY);
-
-    if (tile) {
-      const x1 = indexX * tileSize;
-      const x2 = x1 + tileSize;
-      const y1 = indexY * tileSize;
-      const y2 = y1 + tileSize;
-
-      return { tile, x1, x2, y1, y2, indexX, indexY };
-    }
+  // @ts-expect-error remove it?
+  private searchByPosition(posX: number, posY: number) {
+    return this.getByIndex(this.toIndex(posX), this.toIndex(posY));
   }
 }

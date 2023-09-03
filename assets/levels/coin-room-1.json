@@ -56,11 +56,7 @@
       "name": "pipe-portal",
       "pos": [206, 184],
       "props": {
-        "dir": "RIGHT",
-        "goesTo": {
-          "name": "debug-pipe"
-        },
-        "backTo": [24, 48]
+        "dir": "RIGHT"
       }
     }
   ],

@@ -95,22 +95,22 @@
     },
     {
       "name": "climb",
-      "frameLen": 4,
+      "frameLength": 4,
       "frames": ["climb-1", "climb-2"]
     },
     {
       "name": "swim-idle",
-      "frameLen": 4,
+      "frameLength": 4,
       "frames": ["swim-1", "swim-2"]
     },
     {
       "name": "swim",
-      "frameLen": 6,
+      "frameLength": 6,
       "frames": ["swim-3", "swim-4", "swim-5"]
     },
     {
       "name": "run-large",
-      "frameLen": 6,
+      "frameLength": 6,
       "frames": ["run-1-large", "run-2-large", "run-3-large"]
     }
   ]

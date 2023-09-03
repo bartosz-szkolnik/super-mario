@@ -1,6 +1,6 @@
 {
   "spriteSheet": "overworld",
-  "musicSheet": "silent",
+  "musicSheet": "overworld",
   "patternSheet": "overworld-pattern",
   "checkpoints": [[16, 192]],
 
@@ -41,13 +41,6 @@
   ],
 
   "entities": [
-    {
-      "name": "pipe-portal",
-      "pos": [20, 100],
-      "props": {
-        "dir": "UP"
-      }
-    },
     {
       "name": "pipe-portal",
       "pos": [100, 174],

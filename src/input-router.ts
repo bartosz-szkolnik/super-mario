@@ -1,4 +1,4 @@
-import { Entity } from './entity';
+import type { Entity } from './entity';
 
 export class InputRouter {
   private readonly receivers = new Set<Entity>();

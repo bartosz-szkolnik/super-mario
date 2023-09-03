@@ -36,9 +36,10 @@ function createCannonFactory(audio: AudioBoard) {
 
   return function createCannon() {
     const cannon = new Entity();
-    cannon.audio = audio;
+    cannon.setAudio(audio);
 
     const emitter = new Emitter();
+    emitter.setInterval(4);
     emitter.addEmitter(emitBullet);
 
     cannon.addTrait(emitter);

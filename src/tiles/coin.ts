@@ -5,7 +5,7 @@ function handle({ entity, match, resolver }: TileCollisionContext) {
   if (entity.has(Player)) {
     entity.get(Player).addCoins(1);
 
-    const grid = resolver['matrix'];
+    const grid = resolver.matrix;
     grid.delete(match.indexX, match.indexY);
   }
 }

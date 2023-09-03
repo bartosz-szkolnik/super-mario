@@ -11,7 +11,7 @@ type TravellerState = {
   end: Vec2;
 };
 
-function createTravellerState() {
+function createTravellerState(): TravellerState {
   return {
     time: 0,
     start: new Vec2(0, 0),
@@ -40,9 +40,9 @@ export class Pipe extends Trait {
   static EVENT_PIPE_COMPLETE = Symbol('pipe complete');
 
   private readonly travellers = new Map<Entity, TravellerState>();
-  readonly direction = new Vec2(0, 0);
-
   private duration = 1;
+
+  readonly direction = new Vec2(0, 0);
 
   collides(pipe: Entity, traveller: Entity) {
     if (!traveller.has(PipeTraveller)) {
@@ -74,6 +74,7 @@ export class Pipe extends Trait {
   update(pipe: Entity, { deltaTime }: GameContext, level: Level): void {
     for (const [traveller, state] of this.travellers) {
       state.time += deltaTime ?? 0;
+
       const progress = state.time / this.duration;
       traveller.pos.x = state.start.x + (state.end.x - state.start.x) * progress;
       traveller.pos.y = state.start.y + (state.end.y - state.start.y) * progress;

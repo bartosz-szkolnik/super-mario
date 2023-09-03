@@ -4,6 +4,7 @@ import { loadAudioBoard } from '../loaders/audio';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { type SpriteSheet } from '../spritesheet';
 import { Gravity, Velocity } from '../traits';
+import { LifeLimit } from '../traits/life-limit';
 
 export async function loadBrickShrapnel(audioContext: AudioContext) {
   return Promise.all([loadSpriteSheet('brick-shrapnel'), loadAudioBoard('brick-shrapnel', audioContext)]).then(
@@ -20,9 +21,11 @@ function createBrickShrapnelFactory(sprite: SpriteSheet, audio: AudioBoard) {
 
   return function createBrickShrapnel() {
     const entity = new Entity();
-    entity.audio = audio;
+    entity.setAudio(audio);
 
     entity.size.set(8, 8);
+
+    entity.addTrait(new LifeLimit());
     entity.addTrait(new Gravity());
     entity.addTrait(new Velocity());
     entity.draw = draw;

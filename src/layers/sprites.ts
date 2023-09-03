@@ -13,6 +13,7 @@ export function createSpriteLayer(entities: Set<Entity>, width = 64, height = 64
     entities.forEach(entity => {
       spriteBufferContext.clearRect(0, 0, width, height);
       entity.draw(spriteBufferContext);
+
       // prettier-ignore
       context.drawImage(
         spriteBuffer, 

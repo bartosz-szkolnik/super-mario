@@ -71,6 +71,7 @@ class Behavior extends Trait {
     if (this.walkSpeed === null) {
       this.walkSpeed = us.get(PendulumMove).speed;
     }
+
     this.state = 'hiding';
     this.hideTime = 0;
   }
@@ -102,10 +103,10 @@ function createKoopaFactory(sprite: SpriteSheet) {
   const wakeAnimation = sprite.getAnimation('wake');
 
   function routeAnim(koopa: Entity) {
-    const state = koopa.get(Behavior).state;
+    const { state, hideTime } = koopa.get(Behavior);
     if (state === 'hiding') {
-      if (koopa.get(Behavior).hideTime > 3) {
-        return wakeAnimation(koopa.get(Behavior).hideTime);
+      if (hideTime > 3) {
+        return wakeAnimation(hideTime);
       }
 
       return 'hiding';

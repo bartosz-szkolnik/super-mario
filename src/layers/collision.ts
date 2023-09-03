@@ -5,7 +5,7 @@ import type { Level } from '../level';
 import type { TileResolver } from '../tile-resolver';
 
 export function createCollisionLayer(level: Level): Layer {
-  const drawTileCandidateFns = level.tileCollider['resolvers'].map(createTileCandidateLayer);
+  const drawTileCandidateFns = level.tileCollider.resolvers.map(createTileCandidateLayer);
   const drawBoundingBoxes = createEntityLayer(level.entities);
 
   return function drawCollision(context: CanvasRenderingContext2D, camera: Camera) {
@@ -25,14 +25,15 @@ function createEntityLayer(entities: Set<Entity>): Layer {
   };
 }
 
-function createTileCandidateLayer(tileResolver: TileResolver | null): Layer {
-  let resolvedTiles: { x: number; y: number }[] = [];
-  const tileSize = tileResolver?.tileSize ?? 16;
+type ResolvedTile = { x: number; y: number };
+function createTileCandidateLayer(tileResolver: TileResolver): Layer {
+  let resolvedTiles: ResolvedTile[] = [];
+  const tileSize = tileResolver.tileSize;
 
-  const getByIndexOriginal = tileResolver?.getByIndex;
-  (tileResolver ?? ({} as any)).getByIndex = function getByIndexFake(x: number, y: number) {
+  const getByIndexOriginal = tileResolver.getByIndex;
+  tileResolver.getByIndex = function getByIndexFake(x: number, y: number) {
     resolvedTiles.push({ x, y });
-    return getByIndexOriginal?.call(tileResolver, x, y);
+    return getByIndexOriginal.call(tileResolver, x, y);
   };
 
   return function drawTileCandidates(context: CanvasRenderingContext2D, camera: Camera) {

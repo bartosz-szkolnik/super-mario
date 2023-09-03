@@ -12,6 +12,7 @@ export class SpriteSheet {
       const buffer = document.createElement('canvas');
       buffer.width = width;
       buffer.height = height;
+
       const context = buffer.getContext('2d')!;
 
       if (flip) {
