@@ -131,7 +131,7 @@ function setupTriggers(levelSpec: LevelSpec, level: Level) {
 
     const entity = new Entity();
     entity.addTrait(trigger);
-    entity.size.set(64, 64);
+    entity.size.set(16, 32);
     entity.pos.set(...triggerSpec.pos);
     level.addEntity(entity);
   }

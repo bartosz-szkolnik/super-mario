@@ -3,13 +3,13 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "pipe-vert-left",
+        "style": "pipe-vert-left",
         "behavior": "ground",
         "ranges": [[0, 0]]
       },
       {
         "type": "TILE",
-        "name": "pipe-vert-right",
+        "style": "pipe-vert-right",
         "behavior": "ground",
         "ranges": [[1, 0]]
       }
@@ -20,13 +20,13 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "pipe-insert-vert-left",
+        "style": "pipe-insert-vert-left",
         "behavior": "ground",
         "ranges": [[0, 0]]
       },
       {
         "type": "TILE",
-        "name": "pipe-insert-vert-right",
+        "style": "pipe-insert-vert-right",
         "behavior": "ground",
         "ranges": [[1, 0]]
       }
@@ -37,13 +37,13 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "pipe-hor-top",
+        "style": "pipe-hor-top",
         "behavior": "ground",
         "ranges": [[0, 0]]
       },
       {
         "type": "TILE",
-        "name": "pipe-hor-bottom",
+        "style": "pipe-hor-bottom",
         "behavior": "ground",
         "ranges": [[0, 1]]
       }
@@ -54,13 +54,13 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "pipe-insert-hor-top",
+        "style": "pipe-insert-hor-top",
         "behavior": "ground",
         "ranges": [[0, 0]]
       },
       {
         "type": "TILE",
-        "name": "pipe-insert-hor-bottom",
+        "style": "pipe-insert-hor-bottom",
         "behavior": "ground",
         "ranges": [[0, 1]]
       }
@@ -71,12 +71,12 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "pipe-conn-hor-top",
+        "style": "pipe-conn-hor-top",
         "ranges": [[0, 0]]
       },
       {
         "type": "TILE",
-        "name": "pipe-conn-hor-bottom",
+        "style": "pipe-conn-hor-bottom",
         "ranges": [[0, 1]]
       }
     ]
@@ -181,7 +181,7 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "chocolate",
+        "style": "chocolate",
         "behavior": "ground",
         "ranges": [[0, 1, 0, 2]]
       }
@@ -192,7 +192,7 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "chocolate",
+        "style": "chocolate",
         "behavior": "ground",
         "ranges": [[0, 1, 0, 3]]
       }
@@ -216,7 +216,7 @@
     "tiles": [
       {
         "type": "TILE",
-        "name": "chocolate",
+        "style": "chocolate",
         "behavior": "ground",
         "ranges": [
           [1, 1, 0, 2],
@@ -235,7 +235,7 @@
       },
       {
         "type": "TILE",
-        "name": "chocolate",
+        "style": "chocolate",
         "behavior": "ground",
         "ranges": [[2, 1, 0, 3]]
       }
@@ -251,7 +251,7 @@
       },
       {
         "type": "TILE",
-        "name": "chocolate",
+        "style": "chocolate",
         "behavior": "ground",
         "ranges": [[3, 1, 0, 4]]
       }

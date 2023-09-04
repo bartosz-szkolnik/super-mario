@@ -9,12 +9,12 @@
       "tiles": [
         {
           "type": "TILE",
-          "name": "sky",
+          "style": "sky",
           "ranges": [[0, 16, 0, 13]]
         },
         {
           "type": "TILE",
-          "name": "ground",
+          "style": "ground",
           "behavior": "ground",
           "ranges": [[0, 16, 13, 2]]
         }
@@ -24,7 +24,7 @@
       "tiles": [
         {
           "type": "TILE",
-          "name": "bricks",
+          "style": "bricks",
           "behavior": "ground",
           "ranges": [
             [0, 1, 2, 11],
@@ -34,7 +34,7 @@
         },
         {
           "type": "TILE",
-          "name": "coin",
+          "style": "coin",
           "behavior": "coin",
           "ranges": [
             [5, 5, 5],

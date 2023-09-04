@@ -9,7 +9,7 @@ import { Scene } from './scene';
 import { TileCollider } from './tile-collider';
 
 export type Tile = {
-  name: string;
+  style: string;
   behavior?: 'ground' | 'brick' | 'coin';
 };
 

@@ -1,6 +1,6 @@
 export type TileSpec = {
   type: 'TILE';
-  name: string;
+  style: string;
   behavior?: 'ground' | 'brick' | 'coin';
   ranges: [[number, number] | [number, number, number] | [number, number, number, number]];
 };
@@ -58,7 +58,7 @@ export type SpriteSpec = {
     index: [number, number];
   }[];
   frames?: {
-    name: 'idle' | 'run-1' | 'run-2' | 'run-3' | 'break' | 'jump' | 'climb';
+    name: 'idle' | 'run-1' | 'run-2' | 'run-3' | 'break' | 'jump' | 'climb-1';
     rect: [number, number, number, number];
   }[];
   animations?: {

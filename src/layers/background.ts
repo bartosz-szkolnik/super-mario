@@ -19,12 +19,12 @@ export function createBackgroundLayer(level: Level, tiles: Matrix<Tile>, sprites
       const col = grid[x];
       if (col) {
         col.forEach((tile, y) => {
-          if (sprites.hasAnimation(tile.name)) {
-            sprites.drawAnimation(tile.name, context, x - startIndex, y, level.totalTime);
+          if (sprites.hasAnimation(tile.style)) {
+            sprites.drawAnimation(tile.style, context, x - startIndex, y, level.totalTime);
             return;
           }
 
-          sprites.drawTile(tile.name, context, x - startIndex, y);
+          sprites.drawTile(tile.style, context, x - startIndex, y);
         });
       }
     }
