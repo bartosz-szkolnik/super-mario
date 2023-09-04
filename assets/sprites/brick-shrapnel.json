@@ -1,5 +1,5 @@
 {
-  "imageUrl": "assets/sprites.png",
+  "imageUrl": "./assets/sprites.png",
   "frames": [
     {
       "name": "brick-1",
