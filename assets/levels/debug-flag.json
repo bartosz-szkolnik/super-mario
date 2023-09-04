@@ -1,0 +1,51 @@
+{
+  "spriteSheet": "overworld",
+  "musicSheet": "overworld",
+  "patternSheet": "overworld-pattern",
+  "checkpoints": [[160, 32]],
+
+  "layers": [
+    {
+      "tiles": [
+        {
+          "type": "TILE",
+          "name": "sky",
+          "ranges": [[0, 212, 0, 15]]
+        },
+        {
+          "type": "TILE",
+          "name": "ground",
+          "behavior": "ground",
+          "ranges": [
+            [0, 69, 13, 2],
+            [71, 15, 13, 2],
+            [89, 64, 13, 2],
+            [155, 57, 13, 2]
+          ]
+        }
+      ]
+    },
+    {
+      "tiles": [
+        {
+          "type": "PATTERN",
+          "pattern": "chocolate-stairs-final",
+          "ranges": [[2, 5]]
+        },
+        {
+          "type": "PATTERN",
+          "pattern": "flag-pole-green",
+          "ranges": [[12, 2]]
+        }
+      ]
+    }
+  ],
+
+  "entities": [
+    {
+      "name": "flag-pole",
+      "pos": [192, 48]
+    }
+  ],
+  "triggers": []
+}

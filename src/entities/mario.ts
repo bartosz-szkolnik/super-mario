@@ -6,6 +6,7 @@ import type { SpriteSheet } from '../spritesheet';
 import { Killable, Stomper, Physics, Solid, Jump, Go } from '../traits';
 import type { SpriteSpec } from '../types';
 import { PipeTraveller } from '../traits/pipe-traveller';
+import { PoleTraveller } from '../traits/pole-traveller';
 
 type MarioFrame = Exclude<SpriteSpec['frames'], undefined>[0]['name'];
 
@@ -17,6 +18,16 @@ export async function loadMario(audioContext: AudioContext) {
 
 function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   const runAnimation = sprite.getAnimation('run');
+  const climbAnimation = sprite.getAnimation('climb');
+
+  function getHeading(mario: Entity) {
+    const poleTraveller = mario.get(PoleTraveller);
+    if (poleTraveller.distance) {
+      return false;
+    }
+
+    return mario.get(Go).heading < 0;
+  }
 
   function routeFrame(mario: Entity): MarioFrame {
     const pipeTraveller = mario.get(PipeTraveller);
@@ -26,6 +37,11 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
 
     if (pipeTraveller.movement.y != 0) {
       return 'idle';
+    }
+
+    const poleTraveller = mario.get(PoleTraveller);
+    if (poleTraveller.distance) {
+      return climbAnimation(poleTraveller.distance) as MarioFrame;
     }
 
     if (mario.get(Jump).falling) {
@@ -49,12 +65,12 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   }
 
   function drawMario(this: Entity, context: CanvasRenderingContext2D) {
-    sprite.draw(routeFrame(this), context, 0, 0, this.get(Go).heading < 0);
+    sprite.draw(routeFrame(this), context, 0, 0, getHeading(this));
   }
 
   return function createMario() {
     const mario = new Entity();
-    mario.audio = audio;
+    mario.setAudio(audio);
     mario.size.set(14, 16);
 
     mario.addTrait(new Physics());
@@ -64,6 +80,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new Killable());
     mario.addTrait(new Stomper());
     mario.addTrait(new PipeTraveller());
+    mario.addTrait(new PoleTraveller());
 
     mario.get(Killable).removeAfter = Infinity;
     mario.get(Jump).velocity = 175;

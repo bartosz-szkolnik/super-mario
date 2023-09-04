@@ -1,3 +1,4 @@
+import { loadFlagPole } from './entities/flag-pole';
 import { loadBrickShrapnel } from './entities/brick-shrapnel';
 import { loadBullet } from './entities/bullet';
 import { loadCannon } from './entities/cannon';
@@ -43,6 +44,8 @@ export type EntityFactories = {
   bullet: EntityFactory;
   cannon: EntityFactory;
   brickShrapnel: EntityFactory;
+  flagPole: EntityFactory;
+  'flag-pole': EntityFactory;
   pipePortal: PipePortalFactory;
   'pipe-portal': PipePortalFactory;
 };
@@ -57,6 +60,7 @@ export async function loadEntities(audioContext: AudioContext) {
     loadBullet(),
     loadCannon(audioContext),
     loadBrickShrapnel(audioContext).then(createPool(8)),
+    loadFlagPole(audioContext),
     loadPipePortal(audioContext),
   ]).then(
     ([
@@ -68,6 +72,7 @@ export async function loadEntities(audioContext: AudioContext) {
       createBullet,
       createCannon,
       createBrickShrapnel,
+      createFlagPole,
       createPipePortal,
     ]) =>
       ({
@@ -83,6 +88,8 @@ export async function loadEntities(audioContext: AudioContext) {
         bullet: createBullet,
         cannon: createCannon,
         brickShrapnel: createBrickShrapnel,
+        flagPole: createFlagPole,
+        'flag-pole': createFlagPole,
         pipePortal: createPipePortal,
         'pipe-portal': createPipePortal,
       } satisfies EntityFactories),
