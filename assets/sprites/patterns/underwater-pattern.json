@@ -1,0 +1,32 @@
+{
+  "water": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "style": "waves",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "style": "water",
+        "ranges": [[0, 1, 1, 12]]
+      }
+    ]
+  },
+  "pipe-cap-hor": {
+    "tiles": [
+      {
+        "type": "TILE",
+        "style": "pipe-insert-hor-top",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "type": "TILE",
+        "style": "pipe-insert-hor-bottom",
+        "behavior": "ground",
+        "ranges": [[0, 1]]
+      }
+    ]
+  }
+}

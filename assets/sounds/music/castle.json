@@ -1,0 +1,8 @@
+{
+  "main": {
+    "url": "./assets/audio/music/castle.ogg"
+  },
+  "hurry": {
+    "url": "./assets/audio/music/hurry.ogg"
+  }
+}
