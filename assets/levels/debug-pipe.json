@@ -9,12 +9,12 @@
       "tiles": [
         {
           "type": "TILE",
-          "name": "sky",
+          "style": "sky",
           "ranges": [[0, 212, 0, 15]]
         },
         {
           "type": "TILE",
-          "name": "ground",
+          "style": "ground",
           "behavior": "ground",
           "ranges": [
             [0, 69, 13, 2],
@@ -41,6 +41,10 @@
   ],
 
   "entities": [
+    {
+      "name": "piranha-plant",
+      "pos": [104, 176]
+    },
     {
       "name": "pipe-portal",
       "pos": [100, 174],

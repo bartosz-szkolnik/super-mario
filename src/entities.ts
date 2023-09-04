@@ -6,6 +6,7 @@ import { loadGoombaBrown, loadGoombaBlue } from './entities/goomba';
 import { loadKoopaGreen, loadKoopaBlue } from './entities/koopa';
 import { loadMario } from './entities/mario';
 import { loadPipePortal } from './entities/pipe-portal';
+import { loadPiranhaPlant } from './entities/piranha-plant';
 import type { Entity, EntityProps } from './entity';
 import { PipePortalPropsSpec } from './types';
 
@@ -44,6 +45,8 @@ export type EntityFactories = {
   bullet: EntityFactory;
   cannon: EntityFactory;
   brickShrapnel: EntityFactory;
+  piranhaPlant: EntityFactory;
+  'piranha-plant': EntityFactory;
   flagPole: EntityFactory;
   'flag-pole': EntityFactory;
   pipePortal: PipePortalFactory;
@@ -60,6 +63,7 @@ export async function loadEntities(audioContext: AudioContext) {
     loadBullet(),
     loadCannon(audioContext),
     loadBrickShrapnel(audioContext).then(createPool(8)),
+    loadPiranhaPlant(),
     loadFlagPole(audioContext),
     loadPipePortal(audioContext),
   ]).then(
@@ -72,6 +76,7 @@ export async function loadEntities(audioContext: AudioContext) {
       createBullet,
       createCannon,
       createBrickShrapnel,
+      createPiranhaPlant,
       createFlagPole,
       createPipePortal,
     ]) =>
@@ -88,6 +93,8 @@ export async function loadEntities(audioContext: AudioContext) {
         bullet: createBullet,
         cannon: createCannon,
         brickShrapnel: createBrickShrapnel,
+        piranhaPlant: createPiranhaPlant,
+        'piranha-plant': createPiranhaPlant,
         flagPole: createFlagPole,
         'flag-pole': createFlagPole,
         pipePortal: createPipePortal,

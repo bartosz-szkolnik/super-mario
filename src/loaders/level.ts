@@ -14,7 +14,7 @@ import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
-const CHARACTER_BEHIND_BACKGROUND = false;
+const CHARACTER_BEHIND_BACKGROUND = true;
 
 export function createLevelLoader(entityFactories: EntityFactories) {
   return async function loadLevel(name: string) {
