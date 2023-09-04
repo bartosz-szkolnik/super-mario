@@ -7,11 +7,14 @@ import { Level, type Tile } from '../level';
 import { loadJSON } from '../loaders';
 import { GameContext } from '../main';
 import { Matrix, Vec2 } from '../math';
+import { SpriteSheet } from '../spritesheet';
 import { Trait } from '../trait';
 import { LevelTimer, Trigger } from '../traits';
 import type { LevelSpec, PatternSheetSpec, TilePatternSpec } from '../types';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
+
+const CHARACTER_BEHIND_BACKGROUND = false;
 
 export function createLevelLoader(entityFactories: EntityFactories) {
   return async function loadLevel(name: string) {
@@ -28,7 +31,7 @@ export function createLevelLoader(entityFactories: EntityFactories) {
     level.name = name;
     level.music.setPlayer(musicPlayer);
 
-    setupBackgrounds(levelSpec, level, patterns);
+    setupBackgrounds(levelSpec, level, backgroundSprites, patterns);
     setupEntities(levelSpec, level, entityFactories);
     setupTriggers(levelSpec, level);
     setupCheckpoints(levelSpec, level);
@@ -36,22 +39,33 @@ export function createLevelLoader(entityFactories: EntityFactories) {
     setupBehavior(level);
     setupCamera(level);
 
-    for (const resolver of level.tileCollider.resolvers) {
-      const backgroundLayer = createBackgroundLayer(level, resolver.matrix, backgroundSprites);
-      level.addLayer(backgroundLayer);
-    }
+    if (CHARACTER_BEHIND_BACKGROUND) {
+      for (const resolver of level.tileCollider.resolvers) {
+        const backgroundLayer = createBackgroundLayer(level, resolver.matrix, backgroundSprites);
+        level.addLayer(backgroundLayer);
+      }
 
-    const spriteLayer = createSpriteLayer(level.entities);
-    const layers = level.getCompositor().getLayers();
-    layers.splice(layers.length - 1, 0, spriteLayer);
+      const spriteLayer = createSpriteLayer(level.entities);
+      const layers = level.getCompositor().getLayers();
+      layers.splice(layers.length - 1, 0, spriteLayer);
+    }
 
     return level;
   };
 }
 
-function setupBackgrounds(levelSpec: LevelSpec, level: Level, patterns: PatternSheetSpec) {
+function setupBackgrounds(
+  levelSpec: LevelSpec,
+  level: Level,
+  backgroundSprites: SpriteSheet,
+  patterns: PatternSheetSpec,
+) {
   levelSpec.layers.forEach(layer => {
     const grid = createGrid(layer.tiles, patterns);
+    if (!CHARACTER_BEHIND_BACKGROUND) {
+      const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
+      level.addLayer(backgroundLayer);
+    }
     level.tileCollider.addGrid(grid);
   });
 }
@@ -115,6 +129,11 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: Enti
   const entityProxy = new Entity();
   entityProxy.addTrait(spawner);
   level.entities.add(entityProxy);
+
+  if (!CHARACTER_BEHIND_BACKGROUND) {
+    const spriteLayer = createSpriteLayer(level.entities);
+    level.addLayer(spriteLayer);
+  }
 }
 
 function setupTriggers(levelSpec: LevelSpec, level: Level) {
